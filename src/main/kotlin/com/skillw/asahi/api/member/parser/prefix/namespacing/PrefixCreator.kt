@@ -19,7 +19,7 @@ interface PrefixCreator<R> {
         vararg alias: String,
         namespace: String = "common",
     ) {
-        object : BasePrefix<R>(key, *alias, namespace) {
+        object : BasePrefix<R>(key, *alias, namespace = namespace) {
             override fun AsahiLexer.parse(): Quester<R> {
                 return this@PrefixCreator.run { parser<R>().parse() }
             }

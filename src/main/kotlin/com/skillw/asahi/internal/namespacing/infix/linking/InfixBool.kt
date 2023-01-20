@@ -10,7 +10,7 @@ import com.skillw.asahi.api.member.parser.infix.namespacing.BaseInfix
  * @date 2022年12月13日14点47分 Copyright 2022 user. All rights reserved.
  */
 @AsahiInfix
-object ActionBool : BaseInfix<Boolean>(Boolean::class.java) {
+internal object InfixBool : BaseInfix<Boolean>(Boolean::class.java) {
     init {
         infix("?") { bool ->
             if (bool) {

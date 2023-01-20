@@ -8,7 +8,7 @@ import com.skillw.asahi.api.prefixParser
 import com.skillw.asahi.util.MessageUtil.debug
 import java.util.*
 
-internal object FunctionDebug {
+internal object PrefixDebug {
 
     private fun Collection<*>.debug() {
         val messages = LinkedList<String>()

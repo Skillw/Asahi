@@ -7,7 +7,7 @@ import com.skillw.asahi.api.member.parser.prefix.TopPrefixParser
 import com.skillw.asahi.api.member.quest.Quester
 
 @AsahiTopParser
-internal object FunctionParser : TopPrefixParser<Any?>("call-function", 999) {
+internal object PrefixCallParser : TopPrefixParser<Any?>("call-function", 999) {
     override fun AsahiLexer.canParse(token: String): Boolean {
         return hasFunction(token)
     }

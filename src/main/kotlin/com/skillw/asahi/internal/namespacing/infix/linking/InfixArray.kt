@@ -10,7 +10,7 @@ import com.skillw.asahi.api.member.parser.infix.namespacing.BaseInfix
  * @date 2022/8/9 16:26 Copyright 2022 user. All rights reserved.
  */
 @AsahiInfix
-object ActionArray : BaseInfix<Array<*>>(Array::class.java) {
+internal object InfixArray : BaseInfix<Array<*>>(Array::class.java) {
     init {
         //添加后缀动作        这个obj是当前操作的对象
         infix("get") { obj ->

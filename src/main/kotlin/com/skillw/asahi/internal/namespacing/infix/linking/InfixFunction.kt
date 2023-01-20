@@ -11,7 +11,7 @@ import com.skillw.asahi.internal.script.NativeFunctionImpl
  * @date 2022/8/9 16:26 Copyright 2022 user. All rights reserved.
  */
 @AsahiInfix
-object ActionFunction : BaseInfix<NativeFunctionImpl>(NativeFunctionImpl::class.java) {
+internal object InfixFunction : BaseInfix<NativeFunctionImpl>(NativeFunctionImpl::class.java) {
     init {
         infix("[", "(") { obj ->
             val params = parse<Array<Any?>>()

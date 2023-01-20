@@ -10,7 +10,7 @@ import com.skillw.asahi.api.member.parser.infix.namespacing.BaseInfix
  * @date 2022/8/9 16:26 Copyright 2022 user. All rights reserved.
  */
 @AsahiInfix
-object ActionList : BaseInfix<MutableList<*>>(MutableList::class.java) {
+internal object InfixList : BaseInfix<MutableList<*>>(MutableList::class.java) {
 
     init {
         "get" to { obj ->

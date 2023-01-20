@@ -10,7 +10,7 @@ import com.skillw.asahi.api.member.parser.infix.namespacing.BaseInfix
  * @date 2022年12月13日14点47分 Copyright 2022 user. All rights reserved.
  */
 @AsahiInfix
-object ActionString : BaseInfix<String>(String::class.java) {
+internal object InfixString : BaseInfix<String>(String::class.java) {
     init {
         infix("[") { key ->
             if (!hasNativeFunction(key)) return@infix null

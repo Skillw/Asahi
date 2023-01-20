@@ -6,7 +6,7 @@ import com.skillw.asahi.api.quest
 import com.skillw.asahi.api.quester
 import com.skillw.asahi.api.script.NativeFunction
 
-internal object FunctionRegex {
+internal object PrefixRegex {
     @AsahiPrefix(["regexOf"], "lang")
     private fun regexOf() = prefixParser {
         val regex = quest<String>()

@@ -11,7 +11,7 @@ import java.util.concurrent.CompletableFuture
  * @date 2023年1月16日23点47分 Copyright 2023 user. All rights reserved.
  */
 @AsahiInfix
-object ActionCompletableFuture : BaseInfix<CompletableFuture<*>>(CompletableFuture::class.java) {
+internal object InfixCompletableFuture : BaseInfix<CompletableFuture<*>>(CompletableFuture::class.java) {
     init {
         infix("join") { future ->
             future.join()

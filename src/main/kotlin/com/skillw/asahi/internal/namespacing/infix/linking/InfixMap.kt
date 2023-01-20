@@ -10,7 +10,7 @@ import com.skillw.asahi.api.member.parser.infix.namespacing.BaseInfix
  * @date 2022/8/9 16:26 Copyright 2022 user. All rights reserved.
  */
 @AsahiInfix
-object ActionMap : BaseInfix<MutableMap<*, *>>(MutableMap::class.java) {
+internal object InfixMap : BaseInfix<MutableMap<*, *>>(MutableMap::class.java) {
 
     init {
         infix("get") { map ->

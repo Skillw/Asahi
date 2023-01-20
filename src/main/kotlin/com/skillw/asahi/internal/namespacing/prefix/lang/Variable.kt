@@ -16,12 +16,12 @@ import com.skillw.asahi.api.quest
 private fun set() = prefixParser {
     val key = next()
     when {
-        except("ifndef") -> {
+        expect("ifndef") -> {
             result { if (containsKey(key)) return@result context()[key] else null }
         }
 
-        except("by") && except("lazy") -> {
-            except("to", "=");
+        expect("by") && expect("lazy") -> {
+            expect("to", "=");
 
             val block = quest<Quester<*>>()
             result {
@@ -32,7 +32,7 @@ private fun set() = prefixParser {
         }
 
         else -> {
-            except("to", "=")
+            expect("to", "=")
             val value = quest<Any?>()
             result {
                 value.get()?.let {

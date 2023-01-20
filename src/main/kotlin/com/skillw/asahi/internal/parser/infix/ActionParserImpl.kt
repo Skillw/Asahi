@@ -24,7 +24,7 @@ internal object ActionParserImpl : InfixParser() {
         //查看下一个token 是否在"忽略列表"中
         if (peek() in ignores) return getter
         //查看下一个token 是否在 allActions里(所有后缀动作的set)
-        if (namespaces.all { !it.hasAction(peek()) }) return getter
+        if (namespaces.all { !it.hasInfix(peek()) }) return getter
         //以上3个判断，都是为了过滤掉非后缀动作
 
         val tokens = LinkedList<String>()
@@ -40,33 +40,33 @@ internal object ActionParserImpl : InfixParser() {
         //后缀动作 上下文
         val context = quester { InfixContext(context(), actionReader) }
         //执行内容 （Supplier）
-        return actionQuester(getter, tokens) {
+        return infixQuester(getter, tokens) {
             //获取对象
             //这时候才知道对象的类型
-            var obj = getter.get() ?: return@actionQuester null
-            var baseInfix = actionOf(obj) as? BaseInfix<Any>? ?: return@actionQuester obj
+            var obj = getter.get() ?: return@infixQuester null
+            var baseInfix = infixOf(obj) as? BaseInfix<Any>? ?: return@infixQuester obj
             //获取上下文
             context.get().run {
                 reset()
                 while (hasNext()) {
-                    if (this.action == "@NONE")
-                        this.action = next()
+                    if (this.token == "@NONE")
+                        this.token = next()
                     //基于对象类型 获取BaseAction<T>对象 并调用动作
                     obj = baseInfix.run { action(obj) } ?: return@run "null"
-                    baseInfix = actionOf(obj) as? BaseInfix<Any>? ?: return@actionQuester obj
-                    this.action = "@NONE"
+                    baseInfix = infixOf(obj) as? BaseInfix<Any>? ?: return@infixQuester obj
+                    this.token = "@NONE"
                 }
                 obj
             }
         }
     }
 
-    private fun AsahiLexer.actionOf(obj: Any): BaseInfix<*>? {
+    private fun AsahiLexer.infixOf(obj: Any): BaseInfix<*>? {
         val type = obj::class.java
-        return namespaces.firstOrNull { it.hasAction(type) }?.actionOf(obj)
+        return namespaces.firstOrNull { it.hasInfix(type) }?.infixOf(obj)
     }
 
-    private fun <R> actionQuester(
+    private fun <R> infixQuester(
         quester: Quester<*>,
         actions: Collection<String>,
         quest: AsahiContext.() -> R,

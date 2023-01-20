@@ -33,7 +33,7 @@ private fun setOf() = prefixParser {
 
 @AsahiPrefix(["mapOf"], "lang")
 private fun mapOf() = prefixParser {
-    if (except("with")) {
+    if (expect("with")) {
         val template = quest<MapTemplate>()
         val list = quest<List<Any>>()
         result { template.get().build(list.get()) }
@@ -45,7 +45,7 @@ private fun mapOf() = prefixParser {
 
 @AsahiPrefix(["mapListOf"], "lang")
 private fun mapListOf() = prefixParser {
-    except("with")
+    expect("with")
     val templateGetter = quest<MapTemplate>()
     val list = quest<List<Any>>()
     result {
@@ -76,7 +76,7 @@ private fun mapTemplate() = prefixParser {
 @AsahiPrefix(["join"], "lang")
 private fun join() = prefixParser {
     val list = quest<List<Any>>()
-    val by = if (except("by")) quest() else quester { "" }
+    val by = if (expect("by")) quest() else quester { "" }
     result {
         list.get().joinToString(by.get().replace("\\n", "\n"))
     }
@@ -85,7 +85,7 @@ private fun join() = prefixParser {
 @AsahiPrefix(["replace"], "lang")
 private fun replace() = prefixParser {
     val str = quest<String>()
-    except("with")
+    expect("with")
     val replacement = quest<Map<String, Any>>()
     result {
         var cache = str.get()

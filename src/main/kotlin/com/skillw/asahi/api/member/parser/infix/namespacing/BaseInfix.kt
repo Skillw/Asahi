@@ -24,7 +24,7 @@ abstract class BaseInfix<T : Any>(override val key: Class<out T>, override val n
 
     //  动作上下文        执行动作
     fun InfixContext.action(obj: T): Any? {
-        return actions[action]?.run { execute(obj) }
+        return actions[token]?.run { execute(obj) }
     }
 
     infix fun String.to(executor: InfixContext.(T) -> Any?) {
@@ -56,7 +56,7 @@ abstract class BaseInfix<T : Any>(override val key: Class<out T>, override val n
     }
 
     override fun register() {
-        AsahiManager.getNamespace(namespace).registerAction(this)
+        AsahiManager.getNamespace(namespace).registerInfix(this)
     }
 
     fun putAll(other: BaseInfix<*>) {

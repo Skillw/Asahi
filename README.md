@@ -64,7 +64,7 @@ fun pair() = typeParser(Pair::class.java) {
         val first = quest<Any?>()
         //预期下一个Token是 [ "to", "=", ":" ] 中的一个
         //预期成功或失败都将继续执行，在这里预期只是为了跳过这几个Token
-        except("to", "=", ":")
+        expect("to", "=", ":")
         //寻求第二个对象
         val second = quest<Any?>()
         //返回结果        构建Pair对象

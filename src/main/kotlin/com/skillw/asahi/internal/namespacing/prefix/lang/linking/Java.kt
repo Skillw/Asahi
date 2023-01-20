@@ -16,8 +16,8 @@ import taboolib.library.reflex.Reflex.Companion.invokeConstructor
  */
 @AsahiPrefix(["java"], "lang")
 private fun java() = prefixParser {
-    val isPackage = except("in")
-    except("of")
+    val isPackage = expect("in")
+    expect("of")
     val path = questString()
     result {
         if (isPackage) {
@@ -34,7 +34,7 @@ private fun java() = prefixParser {
 private fun new() = prefixParser {
     val clazz = next().let { quester { context()[it] as Class<*> } }
     val paramsGetter = if (peek() == "[" || peek() == "(") quest() else quester { emptyList<Any?>() }
-    except("[]", "()")
+    expect("[]", "()")
     result {
         val params = paramsGetter.get()
         clazz.get().invokeConstructor(*params.toTypedArray())

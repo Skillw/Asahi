@@ -10,17 +10,17 @@ internal object PrefixRegex {
     @AsahiPrefix(["regexOf"], "lang")
     private fun regexOf() = prefixParser {
         val regex = quest<String>()
-        val options = if (except("with")) quest() else quester { emptySet<RegexOption>() }
+        val options = if (expect("with")) quest() else quester { emptySet<RegexOption>() }
         result { regex.get().toRegex(options.get()) }
     }
 
     @AsahiPrefix(["regex"], "lang")
     private fun regex() = prefixParser {
-        val regex = if (except("of")) quest<String>().quester { it.toRegex() } else quester { selector() }
+        val regex = if (expect("of")) quest<String>().quester { it.toRegex() } else quester { selector() }
         when (val type = next()) {
             "find" -> {
                 val input = quest<String>()
-                val index = if (except("at")) quest() else quester { 0 }
+                val index = if (expect("at")) quest() else quester { 0 }
                 result {
                     regex.get().find(input.get(), index.get())
                 }
@@ -28,7 +28,7 @@ internal object PrefixRegex {
 
             "findAll" -> {
                 val input = quest<String>()
-                val index = if (except("at")) quest() else quester { 0 }
+                val index = if (expect("at")) quest() else quester { 0 }
                 result {
                     regex.get().find(input.get(), index.get())
                 }
@@ -36,7 +36,7 @@ internal object PrefixRegex {
 
             "matches" -> {
                 val input = quest<String>()
-                val index = if (except("at")) quest() else quester { 0 }
+                val index = if (expect("at")) quest() else quester { 0 }
                 result {
                     regex.get().matchesAt(input.get(), index.get())
                 }
@@ -44,7 +44,7 @@ internal object PrefixRegex {
 
             "replace" -> {
                 val input = quest<String>()
-                val replacement = if (except("with")) quest<NativeFunction>() else quest<String>()
+                val replacement = if (expect("with")) quest<NativeFunction>() else quest<String>()
                 result {
                     when (val obj = replacement.get()) {
                         is String -> regex.get().replace(input.get(), obj)

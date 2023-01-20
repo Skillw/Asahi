@@ -37,7 +37,7 @@ private fun `false`() = prefixParser {
 
 @AsahiPrefix(["return"], "lang")
 private fun `return`() = prefixParser {
-    val value = if (except(";")) quester { Unit } else quest<Any?>()
+    val value = if (expect(";")) quester { Unit } else quest<Any?>()
     result { exit(); value.get() }
 }
 

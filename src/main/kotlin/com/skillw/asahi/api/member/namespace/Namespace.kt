@@ -6,33 +6,33 @@ import com.skillw.asahi.api.member.parser.infix.namespacing.BaseInfix
 import com.skillw.asahi.api.member.parser.prefix.namespacing.BasePrefix
 
 open class Namespace(override val key: String, val shared: Boolean = false) : AsahiRegistrable<String> {
-    /** Functions 函数容器， key -> 函数 */
-    internal val functions = HashMap<String, BasePrefix<*>>()
+    /** Prefix 前缀解释器容器， Token -> 前缀解释器 */
+    internal val prefixMap = HashMap<String, BasePrefix<*>>()
 
-    /** Actions 动作容器， 类型 -> 动作 */
-    internal val actions = java.util.HashMap<Class<*>, BaseInfix<*>>()
+    /** Infix 中缀解释器容器， 类型 -> 中缀解释器 */
+    internal val infixMap = java.util.HashMap<Class<*>, BaseInfix<*>>()
 
-    internal val allActions = HashSet<String>()
+    internal val allInfixTokens = HashSet<String>()
 
-    fun hasFunction(key: String): Boolean {
-        return functions.containsKey(key)
+    fun hasPrefix(key: String): Boolean {
+        return prefixMap.containsKey(key)
     }
 
-    fun getFunction(key: String): BasePrefix<*>? {
-        return functions[key]
+    fun getPrefix(key: String): BasePrefix<*>? {
+        return prefixMap[key]
     }
 
-    fun registerFunction(func: BasePrefix<*>) {
+    fun registerPrefix(func: BasePrefix<*>) {
         val keys = listOf(func.key, *func.alias)
         keys.forEach { key ->
-            functions[key] = func
+            prefixMap[key] = func
         }
     }
 
     fun <T : Any> getAction(type: Class<T>): BaseInfix<T> {
-        return actions[type] as? BaseInfix<T>? ?: kotlin.run {
+        return infixMap[type] as? BaseInfix<T>? ?: kotlin.run {
             val newAction = BaseInfix.createInfix(type)
-            actions.entries.sortedWith { a, b ->
+            infixMap.entries.sortedWith { a, b ->
                 if (a.key.isAssignableFrom(b.key)) -1 else 1
             }.forEach {
                 newAction.putAll(it.value)
@@ -41,26 +41,26 @@ open class Namespace(override val key: String, val shared: Boolean = false) : As
         }
     }
 
-    fun registerAction(action: BaseInfix<*>) {
+    fun registerInfix(action: BaseInfix<*>) {
         val type = action.key
-        if (actions.containsKey(type)) {
-            actions[type]?.putAll(action)
+        if (infixMap.containsKey(type)) {
+            infixMap[type]?.putAll(action)
             return
         }
-        actions[type] = action
-        action.actions.keys.forEach(allActions::add)
+        infixMap[type] = action
+        action.actions.keys.forEach(allInfixTokens::add)
     }
 
-    fun hasAction(action: String?): Boolean {
-        return allActions.contains(action)
+    fun hasInfix(action: String?): Boolean {
+        return allInfixTokens.contains(action)
     }
 
-    fun hasAction(type: Class<*>): Boolean {
-        return actions.containsKey(type)
+    fun hasInfix(type: Class<*>): Boolean {
+        return infixMap.containsKey(type) || infixMap.keys.any { it.isAssignableFrom(type) }
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun <T : Any> actionOf(any: T): BaseInfix<T> {
+    fun <T : Any> infixOf(any: T): BaseInfix<T> {
         return getAction(any::class.java as Class<T>)
     }
 

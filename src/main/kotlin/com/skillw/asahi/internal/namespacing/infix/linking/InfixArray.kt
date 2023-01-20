@@ -15,7 +15,7 @@ internal object InfixArray : BaseInfix<Array<*>>(Array::class.java) {
         //添加后缀动作        这个obj是当前操作的对象
         infix("get") { obj ->
             //预期下一个Token是 "at"
-            except("at")
+            expect("at")
             //          获取一个Int
             val index = parse<Int>()
             //返回结果
@@ -24,9 +24,9 @@ internal object InfixArray : BaseInfix<Array<*>>(Array::class.java) {
 
         infix("set") { obj ->
             obj as? Array<Any?> ?: error("The tokenizer should be a Array<Any>")
-            except("at")
+            expect("at")
             val index = parse<Int>()
-            except("to")
+            expect("to")
             val value = parse<Any>()
             obj[index] = value
             return@infix value

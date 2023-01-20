@@ -24,7 +24,7 @@ private fun `fun`() = prefixParser {
 @AsahiPrefix(["invoke", "call"], "lang")
 private fun invoke() = prefixParser {
     val func = quest<String>()
-    val paramsGetter = if (except("with")) quest<Array<Any>>() else quester { emptyArray() }
+    val paramsGetter = if (expect("with")) quest<Array<Any>>() else quester { emptyArray() }
     result {
         val params = paramsGetter.get()
         invoke(func.get(), *params)

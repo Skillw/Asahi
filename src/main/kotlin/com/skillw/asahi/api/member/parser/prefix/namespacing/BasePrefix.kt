@@ -45,6 +45,6 @@ abstract class BasePrefix<R>(
     }
 
     override fun register() {
-        AsahiManager.getNamespace(namespace).registerFunction(this)
+        AsahiManager.getNamespace(namespace).registerPrefix(this)
     }
 }

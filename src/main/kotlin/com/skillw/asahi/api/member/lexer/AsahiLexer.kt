@@ -17,6 +17,9 @@ import com.skillw.asahi.internal.util.Time
  */
 interface AsahiLexer : NamespaceHolder<AsahiLexer> {
 
+    @Deprecated("拼写错误捏 真丢人呢", ReplaceWith("expect"))
+    fun except(vararg excepts: String): Boolean = expect(*excepts)
+
     /**
      * 预期下一个token
      *
@@ -24,10 +27,10 @@ interface AsahiLexer : NamespaceHolder<AsahiLexer> {
      *
      * 否则 不跳过下一个token 并返回false
      *
-     * @param excepts
+     * @param expects
      * @return 下一个token是否符合预期
      */
-    fun except(vararg excepts: String): Boolean
+    fun expect(vararg expects: String): Boolean
 
     /** @return 是否有下一个Token */
     fun hasNext(): Boolean

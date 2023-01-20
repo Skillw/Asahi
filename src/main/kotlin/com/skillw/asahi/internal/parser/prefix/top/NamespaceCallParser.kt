@@ -13,13 +13,13 @@ internal object NamespaceCallParser : TopPrefixParser<Any?>("namespace-call-func
         if (!token.contains("::")) return false
         val splits = token.split("::")
         val namespace = AsahiManager.getNamespace(splits[0])
-        return namespace.hasFunction(splits[1])
+        return namespace.hasPrefix(splits[1])
     }
 
     override fun AsahiLexer.parse(token: String): Quester<Any?>? {
         val splits = token.split("::")
         val namespace = AsahiManager.getNamespace(splits[0])
-        val function = namespace.getFunction(splits[1]) ?: return null
+        val function = namespace.getPrefix(splits[1]) ?: return null
         return function.parseWith(this@parse) as Quester<Any?>?
     }
 

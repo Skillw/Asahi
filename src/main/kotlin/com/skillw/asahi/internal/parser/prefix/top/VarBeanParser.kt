@@ -41,23 +41,23 @@ internal object VarBeanParser : TopPrefixParser<Any?>("var-bean", 1) {
             context.get().run {
                 reset()
                 while (hasNext()) {
-                    if (action == "@NONE")
-                        action = next()
+                    if (this.token == "@NONE")
+                        this.token = next()
                     obj = (if (peek() in linkingTokens) {
                         next()
                         val any = parse<Any?>()
-                        obj.fastSet(action, any)
+                        obj.fastSet(this.token, any)
                         any
                     } else if (peek() in paramsTokens) {
                         val params = if (peek() == "[]" || peek() == "()") {
                             next()
                             emptyArray()
                         } else parseArray()
-                        obj.fastInvoke<Any?>(action, *params)
+                        obj.fastInvoke<Any?>(this.token, *params)
                     } else {
-                        obj.fastGet(action)
+                        obj.fastGet(this.token)
                     }) ?: return@run "null"
-                    action = "@NONE"
+                    this.token = "@NONE"
                 }
                 obj
             }

@@ -15,12 +15,12 @@ internal object InfixBool : BaseInfix<Boolean>(Boolean::class.java) {
         infix("?") { bool ->
             if (bool) {
                 val result = parse<Any>()
-                except(":")
+                expect(":")
                 skip()
                 result
             } else {
                 skip()
-                except(":")
+                expect(":")
                 parse<Any>()
             }
         }

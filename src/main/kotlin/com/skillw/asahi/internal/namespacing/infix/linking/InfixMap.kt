@@ -21,7 +21,7 @@ internal object InfixMap : BaseInfix<MutableMap<*, *>>(MutableMap::class.java) {
         infix("put", "set") { map ->
             map as? MutableMap<String, Any?>? ?: error("MutableMap<String,Any?>")
             val key = parse<String>()
-            except("to")
+            expect("to")
             val value = parse<Any>()
             map[key] = value
             value

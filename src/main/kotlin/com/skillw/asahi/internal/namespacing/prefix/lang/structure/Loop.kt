@@ -33,7 +33,7 @@ private fun `while`() = prefixParser {
 @AsahiPrefix(["repeat"], "lang")
 private fun repeat() = prefixParser {
     val time = quest<Int>()
-    val indexName = if (except("with")) quest() else quester { "index" }
+    val indexName = if (expect("with")) quest() else quester { "index" }
     runLoop { loopOnce ->
         val indexParam = indexName.get()
         for (i in 0 until time.get()) {
@@ -49,7 +49,7 @@ private fun repeat() = prefixParser {
 @AsahiPrefix(["foreach", "for"], "lang")
 private fun foreach() = prefixParser {
     val paramName = next()
-    except("in")
+    expect("in")
     val getter = quest<Any>()
     runLoop { loopOnce ->
         when (val obj = getter.get()) {
@@ -80,8 +80,8 @@ private fun foreach() = prefixParser {
 private fun PrefixParser<*>.runLoop(
     loop: AsahiLoopContext.(() -> LoopContext.Result) -> Unit,
 ): Quester<Unit> {
-    val label = if (except("label")) next() else UUID.randomUUID().toString()
-    except("then")
+    val label = if (expect("label")) next() else UUID.randomUUID().toString()
+    expect("then")
     val process = parseScript()
     return result {
         val loopContext = context().loopContext(label)
@@ -115,7 +115,7 @@ private fun PrefixParser<*>.runLoop(
 
 @AsahiPrefix(["break"], "lang")
 private fun `break`() = prefixParser {
-    val labelGetter = if (except("the")) quest() else quester { (context() as LoopContext).label }
+    val labelGetter = if (expect("the")) quest() else quester { (context() as LoopContext).label }
     result {
         if (this !is LoopContext) return@result
         val label = labelGetter.get()
@@ -130,7 +130,7 @@ private fun `break`() = prefixParser {
 
 @AsahiPrefix(["continue"], "lang")
 private fun `continue`() = prefixParser {
-    val labelGetter = if (except("the")) quest() else quester { (context() as LoopContext).label }
+    val labelGetter = if (expect("the")) quest() else quester { (context() as LoopContext).label }
     result {
         if (this !is LoopContext) return@result
         val label = labelGetter.get()

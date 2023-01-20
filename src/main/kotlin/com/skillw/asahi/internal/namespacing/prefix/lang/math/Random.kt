@@ -17,7 +17,7 @@ import java.util.*
 @AsahiPrefix(["random"], "lang")
 fun random() = prefixParser {
     val x = quest<Double>()
-    except("to")
+    expect("to")
     val y = quest<Double>()
     result { com.skillw.asahi.util.random(x.get(), y.get()) }
 }
@@ -25,7 +25,7 @@ fun random() = prefixParser {
 @AsahiPrefix(["randomInt"], "lang")
 fun randomInt() = prefixParser {
     val x = quest<Int>()
-    except("to")
+    expect("to")
     val y = quest<Int>()
     result { com.skillw.asahi.util.randomInt(x.get(), y.get()) }
 }
@@ -38,15 +38,15 @@ fun randomObj() = prefixParser {
 
 @AsahiPrefix(["weight"], "lang")
 fun weight() = prefixParser {
-    except("[")
+    expect("[")
     val list = LinkedList<Pair<Quester<Int>, Quester<Any>>>()
     do {
         val weight = quest<Int>()
-        except("to", "=", ":")
+        expect("to", "=", ":")
         val value = quest<Any>()
         list += weight to value
-        except(",")
-    } while (!except("]"))
+        expect(",")
+    } while (!expect("]"))
     val builder = peek() == "build"
     if (builder) next()
     result {

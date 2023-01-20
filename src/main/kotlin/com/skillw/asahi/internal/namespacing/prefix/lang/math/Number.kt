@@ -46,7 +46,7 @@ fun max() = prefixParser {
         quest<List<Any?>>()
     else {
         val a = quest<Double>()
-        except("to")
+        expect("to")
         val b = quest<Double>()
         result { a.get() to b.get() }
     }
@@ -74,7 +74,7 @@ fun min() = prefixParser {
         quest<List<Any?>>()
     else {
         val a = quest<Double>()
-        except("to")
+        expect("to")
         val b = quest<Double>()
         result { a.get() to b.get() }
     }
@@ -105,7 +105,7 @@ fun round() = prefixParser {
 @AsahiPrefix(["range"], "lang")
 fun range() = prefixParser {
     val from = quest<Double>()
-    except("to", "~", "..")
+    expect("to", "~", "..")
     val to = quest<Double>()
     result {
         val a = from.get()

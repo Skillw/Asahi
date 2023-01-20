@@ -10,10 +10,10 @@ internal object InfixMatchResult : BaseInfix<MatchResult>(MatchResult::class.jav
             result.value
         }
         infix("groups") { result ->
-            if (except("of")) {
+            if (expect("of")) {
                 result.groups[parseString()]?.value
             }
-            if (except("at")) {
+            if (expect("at")) {
                 result.groups[parseInt()]?.value
             } else
                 result.groupValues

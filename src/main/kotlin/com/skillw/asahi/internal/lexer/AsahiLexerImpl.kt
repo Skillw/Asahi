@@ -68,7 +68,7 @@ internal class AsahiLexerImpl : AsahiLexer {
      * @param excepts
      * @return
      */
-    override fun except(vararg excepts: String): Boolean {
+    override fun expect(vararg excepts: String): Boolean {
         return excepts.any {
             (peekNextIgnoreBlank() == it).also { bool ->
                 if (bool) {

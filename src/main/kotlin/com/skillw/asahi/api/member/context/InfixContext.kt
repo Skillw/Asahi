@@ -13,7 +13,7 @@ import com.skillw.asahi.internal.util.Time
  * @date 2022/12/24 15:05 Copyright 2022 user. All rights reserved.
  */
 open class InfixContext(
-    val context: AsahiContext, val reader: AsahiLexer, var action: String = "@NONE",
+    val context: AsahiContext, val reader: AsahiLexer, var token: String = "@NONE",
 ) : AsahiContext by context, AsahiLexer by reader {
     inline fun <reified R> parse(): R = quest<R>().get()
     fun parseString() = parse<String>()
@@ -78,6 +78,6 @@ open class InfixContext(
 
 
     override fun clone(): InfixContext {
-        return InfixContext(context().clone(), this, action)
+        return InfixContext(context().clone(), this, token)
     }
 }

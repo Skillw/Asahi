@@ -26,7 +26,7 @@ internal object PrefixDebug {
             "bean" ->
                 when (val type = next()) {
                     "info" -> {
-                        if (except("of")) {
+                        if (expect("of")) {
                             val any = questAny()
                             result {
                                 AsahiClassBean.of(any.get()::class.java).info.debug()
@@ -74,7 +74,7 @@ internal object PrefixDebug {
                         debug("Asahi Functions: ")
                         AsahiManager.namespaces.values.forEach {
                             debug("Namespace ${it.key}")
-                            it.functions.values.debug()
+                            it.prefixMap.values.debug()
                         }
                     }
                 }
@@ -92,7 +92,7 @@ internal object PrefixDebug {
                     debug("Asahi Functions: ")
                     AsahiManager.namespaces.values.forEach {
                         debug("Namespace ${it.key}")
-                        it.functions.values.debug()
+                        it.prefixMap.values.debug()
                     }
                 }
             }
@@ -102,7 +102,7 @@ internal object PrefixDebug {
                     debug("Asahi Actions: ")
                     AsahiManager.namespaces.values.forEach {
                         debug("Namespace ${it.key}")
-                        it.actions.values.debug()
+                        it.infixMap.values.debug()
                     }
                 }
 
@@ -111,7 +111,7 @@ internal object PrefixDebug {
                     debug("Asahi All Actions: ")
                     AsahiManager.namespaces.values.forEach {
                         debug("Namespace ${it.key}")
-                        it.allActions.debug()
+                        it.allInfixTokens.debug()
                     }
                 }
 

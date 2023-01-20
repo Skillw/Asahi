@@ -14,7 +14,7 @@ internal object InfixList : BaseInfix<MutableList<*>>(MutableList::class.java) {
 
     init {
         "get" to { obj ->
-            except("at")
+            expect("at")
             val index = parse<Int>()
             obj[index]
         }
@@ -32,7 +32,7 @@ internal object InfixList : BaseInfix<MutableList<*>>(MutableList::class.java) {
         }
 
         infix("remove") { obj ->
-            if (except("at")) {
+            if (expect("at")) {
                 return@infix obj.removeAt(parse<Int>())
             }
             val value = parse<Any>()
@@ -73,7 +73,7 @@ internal object InfixList : BaseInfix<MutableList<*>>(MutableList::class.java) {
         }
 
         infix("merge") { obj ->
-            except("by")
+            expect("by")
             val by = parse<String>()
             obj.joinToString(by.replace("\\n", "\n"))
         }

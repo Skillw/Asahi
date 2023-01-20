@@ -19,7 +19,7 @@ internal object PrefixGson {
 
             "decode" -> {
                 val gson = questString()
-                except("of")
+                expect("of")
                 val clazz = next().findClass()
                 result {
                     Gson().fromJson(gson.get(), clazz)

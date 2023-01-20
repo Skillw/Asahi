@@ -17,9 +17,9 @@ import java.util.*
 @AsahiPrefix(["if"], "lang")
 private fun `if`() = prefixParser {
     val condition = condition("then")
-    except("then")
+    expect("then")
     val ifTrue = quest<Any?>()
-    val ifFalse = if (except("else")) quest<Any?>() else quester { }
+    val ifFalse = if (expect("else")) quest<Any?>() else quester { }
     result {
         if (condition.get()) ifTrue.run()
         else ifFalse.run()
@@ -29,27 +29,27 @@ private fun `if`() = prefixParser {
 //多路
 @AsahiPrefix(["when", "switch"], "lang")
 private fun `when`() = prefixParser {
-    val value = if (except("of")) quest<Any>() else null
+    val value = if (expect("of")) quest<Any>() else null
     val pairs = LinkedList<Pair<Quester<Boolean>, Quester<Any>>>()
-    except("{")
-    while (except("case", "when")) {
+    expect("{")
+    while (expect("case", "when")) {
         value?.let {
             val condition = condition("->") {
                 val symbol = next()
                 val other = quest<Any>()
                 quester { com.skillw.asahi.util.check(value, symbol, other) }
             }
-            except("->")
+            expect("->")
             pairs.add(condition to quest())
         } ?: kotlin.run {
             val condition = condition("->")
-            except("->")
+            expect("->")
             val ifTrue = quest<Any>()
             pairs.add(condition to ifTrue)
         }
     }
-    if (except("else", "default")) {
-        except("->")
+    if (expect("else", "default")) {
+        expect("->")
         val final = quest<Any>()
         pairs.add(quester { true } to final)
     }

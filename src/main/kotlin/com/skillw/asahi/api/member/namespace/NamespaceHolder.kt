@@ -23,10 +23,10 @@ interface NamespaceHolder<T : NamespaceHolder<T>> {
     }
 
     fun hasFunction(key: String): Boolean {
-        return namespaces.any { it.hasFunction(key) }
+        return namespaces.any { it.hasPrefix(key) }
     }
 
     fun getFunction(key: String): List<BasePrefix<*>> {
-        return namespaces.filter { it.hasFunction(key) }.map { it.getFunction(key)!! }
+        return namespaces.filter { it.hasPrefix(key) }.map { it.getPrefix(key)!! }
     }
 }

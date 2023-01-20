@@ -115,6 +115,8 @@ import com.skillw.asahi.api.AsahiAPI.asahi
 
 ## 使用
 
+！！当前Asahi还在dev阶段，请勿用于实际生产环境中！！
+
 在Actions中下载自动构建，并打包到您的项目中即可 (Maven仓库在建了)
 如果您的生产环境中有其它包含asahi的项目，请记得使用重定向!
 

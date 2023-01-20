@@ -77,7 +77,7 @@ internal object ActionParserImpl : InfixParser() {
             }
 
             override fun toString(): String {
-                return "Action Quester - $quester - $actions"
+                return "Infix Quester - $quester - $actions"
             }
         }
     }

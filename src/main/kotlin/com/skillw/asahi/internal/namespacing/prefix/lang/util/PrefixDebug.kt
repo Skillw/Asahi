@@ -5,6 +5,7 @@ import com.skillw.asahi.api.AsahiManager.topPrefixParsers
 import com.skillw.asahi.api.AsahiManager.typeParsers
 import com.skillw.asahi.api.annotation.AsahiPrefix
 import com.skillw.asahi.api.prefixParser
+import com.skillw.asahi.internal.util.AsahiClassBean
 import com.skillw.asahi.util.MessageUtil.debug
 import java.util.*
 
@@ -22,6 +23,30 @@ internal object PrefixDebug {
     @AsahiPrefix(["debug"], "lang")
     private fun debugFunc() = prefixParser {
         when (val top = next()) {
+            "bean" ->
+                when (val type = next()) {
+                    "info" -> {
+                        if (except("of")) {
+                            val any = questAny()
+                            result {
+                                AsahiClassBean.of(any.get()::class.java).info.debug()
+                            }
+                        } else
+                            result {
+                                AsahiClassBean.info().debug()
+                            }
+                    }
+
+                    "load" -> {
+                        val any = questAny()
+                        result {
+                            AsahiClassBean.of(any.get()::class.java)
+                        }
+                    }
+
+                    else ->
+                        error("Unknown function bean type $type")
+                }
 
             "parsers" ->
                 when (val parserType = next()) {

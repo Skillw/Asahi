@@ -30,7 +30,7 @@ internal object NamespaceCallParser : TopPrefixParser<Any?>("namespace-call-func
             }
 
             override fun toString(): String {
-                return "Function Quester - $key ${this@langQuester}"
+                return "Namespace Call Quester - $key ${this@langQuester}"
             }
         }
     }

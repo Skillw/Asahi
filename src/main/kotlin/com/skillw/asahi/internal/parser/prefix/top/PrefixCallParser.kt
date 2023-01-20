@@ -23,7 +23,7 @@ internal object PrefixCallParser : TopPrefixParser<Any?>("call-function", 999) {
             }
 
             override fun toString(): String {
-                return "Function Quester - $key ${this@langQuester}"
+                return "Prefix Quester - $key ${this@langQuester}"
             }
         }
     }

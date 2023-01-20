@@ -57,6 +57,12 @@ public class AsahiClassBean {
         }
     }
 
+    public static List<String> info() {
+        List<String> info = new ArrayList<>();
+        cache.values().forEach((it) -> info.addAll(it.info));
+        return info;
+    }
+
     private boolean ifBeanReplaced(String name, String prefix, Consumer<String> consumer) {
         if (!name.startsWith(prefix)) {
             return false;

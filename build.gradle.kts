@@ -21,10 +21,8 @@ taboolib {
     options("skip-kotlin-relocate")
     install("common")
     install("common-5")
-    install("module-database")
     install("module-chat")
     install("platform-application")
-    install("expansion-alkaid-redis")
     classifier = null
     version = "6.0.10-71"
     relocate("com.esotericsoftware.reflectasm", "com.skillw.asahi.reflectasm")

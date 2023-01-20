@@ -118,6 +118,14 @@ import com.skillw.asahi.api.AsahiAPI.asahi
 在Actions中下载自动构建，并打包到您的项目中即可 (Maven仓库在建了)
 如果您的生产环境中有其它包含asahi的项目，请记得使用重定向!
 
+在项目**初始化阶段**调用以下方法
+
+```kotlin
+import com.skillw.asahi.internal.AsahiLoader
+
+AsahiLoader.init("你的包名")
+```
+
 ## Links
 
 WIKI [http://blog.skillw.com/#sort=asahi&doc=README.md](http://blog.skillw.com/#sort=asahi&doc=README.md)

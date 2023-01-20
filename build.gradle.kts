@@ -1,44 +1,67 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
-    kotlin("jvm") version "1.7.20"
-    id("com.github.johnrengelman.shadow") version "6.1.0"
-    application
+    `java-library`
+    `maven-publish`
+    id("io.izzel.taboolib") version "1.55"
+    id("org.jetbrains.kotlin.jvm") version "1.7.20"
+    id("org.jetbrains.dokka") version "1.7.20"
 }
 
-
-group = "com.skillw.asahi"
-version = "0.0.1-alpha"
+taboolib {
+    options("skip-kotlin-relocate")
+    install("common")
+    install("common-5")
+    install("module-database")
+    install("module-chat")
+    install("platform-application")
+    install("expansion-alkaid-redis")
+    classifier = null
+    version = "6.0.10-71"
+    relocate("com.esotericsoftware.reflectasm", "com.skillw.reflectasm")
+}
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    compileOnly("org.apache.commons:commons-lang3:3.5")
-    compileOnly("com.google.guava:guava:21.0")
-    testImplementation(kotlin("test"))
-
+    compileOnly("com.esotericsoftware:reflectasm:1.11.9")
+    compileOnly(kotlin("stdlib-jdk8"))
+    compileOnly(fileTree("libs"))
 }
 
-tasks.test {
-    useJUnitPlatform()
+tasks.withType<JavaCompile> {
+    options.encoding = "UTF-8"
 }
 
-tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
-}
-application {
-    this.mainClass.set("com.skillw.asahi.MainKt")
-    mainClassName = "com.skillw.asahi.MainKt"
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+    kotlinOptions {
+        jvmTarget = "1.8"
+        freeCompilerArgs = listOf("-Xjvm-default=all")
+    }
 }
 
-tasks.withType<ShadowJar> {
-    this.archiveClassifier.set("")
-    archiveBaseName.set("${archiveBaseName.get()}-shaded")
-    dependencies {
-        include(dependency("org.apache.commons:commons-lang3:3.5"))
-        include(dependency("com.google.guava:guava:21.0"))
+configure<JavaPluginConvention> {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+publishing {
+    repositories {
+        maven {
+            url = uri("https://repo.tabooproject.org/repository/releases")
+            credentials {
+                username = project.findProperty("taboolibUsername").toString()
+                password = project.findProperty("taboolibPassword").toString()
+            }
+            authentication {
+                create<BasicAuthentication>("basic")
+            }
+        }
+    }
+    publications {
+        create<MavenPublication>("library") {
+            from(components["java"])
+            groupId = project.group.toString()
+        }
     }
 }

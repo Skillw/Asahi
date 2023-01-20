@@ -1,64 +1,30 @@
 package com.skillw.asahi.api.script
 
-import com.skillw.asahi.api.manager.AsahiManager.compile
 import com.skillw.asahi.api.member.context.AsahiContext
-import java.io.Reader
-import javax.script.*
+import com.skillw.asahi.internal.context.AsahiContextImpl
+import com.skillw.asahi.internal.script.AsahiEngineImpl
+import java.io.File
+import javax.script.AbstractScriptEngine
+import javax.script.Compilable
+import javax.script.Invocable
 
-/**
- * @className AsahiEngine
- *
- * @author Glom
- * @date 2022/12/24 14:02 Copyright 2022 user. All rights reserved.
- */
-class AsahiEngine(private val factory: AsahiEngineFactory) : AbstractScriptEngine(), Compilable, Invocable {
-    val context = AsahiContext()
-
-    override fun eval(script: String, context: ScriptContext): Any? {
-        return (context as AsahiContext).run { script.compile().run() }
+abstract class AsahiEngine(context: AsahiContext) : AbstractScriptEngine(context), Compilable, Invocable {
+    companion object {
+        @JvmStatic
+        fun create(
+            factory: AsahiEngineFactory,
+            context: AsahiContext = AsahiContextImpl.create(),
+        ): AsahiEngine {
+            return AsahiEngineImpl.create(factory, context)
+        }
     }
 
-    override fun eval(reader: Reader, context: ScriptContext): Any? {
-        return eval(reader.readText(), context)
-    }
+    abstract fun compile(file: File, vararg namespaces: String): AsahiCompiledScript
 
-    override fun eval(script: String): Any? {
-        return (context as AsahiContext).run { script.compile().run() }
-    }
+    abstract override fun compile(script: String): AsahiCompiledScript
+    abstract fun compile(script: String, vararg namespaces: String): AsahiCompiledScript
+    abstract fun compile(tokens: Collection<String>, vararg namespaces: String): AsahiCompiledScript
 
-    override fun eval(reader: Reader): Any? {
-        return eval(reader.readText())
-    }
-
-    override fun createBindings(): Bindings {
-        return AsahiContext()
-    }
-
-    override fun getFactory(): ScriptEngineFactory {
-        return factory
-    }
-
-    override fun compile(script: String): CompiledScript {
-        return AsahiCompiledScript(script.compile(), this)
-    }
-
-    override fun compile(script: Reader): CompiledScript {
-        return compile(script.readText())
-    }
-
-    override fun invokeMethod(thiz: Any, name: String, vararg args: Any): Any? {
-        return (context as AsahiContext).invoke(name, *args)
-    }
-
-    override fun invokeFunction(name: String, vararg args: Any): Any? {
-        return (context as AsahiContext).invoke(name, *args)
-    }
-
-    override fun <T : Any?> getInterface(clasz: Class<T>?): T {
-        TODO("Not yet implemented")
-    }
-
-    override fun <T : Any?> getInterface(thiz: Any?, clasz: Class<T>?): T {
-        TODO("Not yet implemented")
-    }
+    abstract fun context(): AsahiContext
+    abstract fun global(): AsahiContext
 }

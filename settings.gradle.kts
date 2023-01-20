@@ -1,3 +1,1 @@
-
-rootProject.name = "Asahi"
-
+rootProject.name="Asahi"

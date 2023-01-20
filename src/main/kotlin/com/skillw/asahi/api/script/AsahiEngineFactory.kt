@@ -1,6 +1,7 @@
 package com.skillw.asahi.api.script
 
-import javax.script.ScriptEngine
+import java.io.File
+import java.util.concurrent.ConcurrentHashMap
 import javax.script.ScriptEngineFactory
 
 /**
@@ -10,10 +11,10 @@ import javax.script.ScriptEngineFactory
  * @date 2022/12/24 13:04 Copyright 2022 user. All rights reserved.
  */
 class AsahiEngineFactory : ScriptEngineFactory {
-    private val names = mutableListOf("asahi")
+    private val names = mutableListOf("com/skillw/asahi")
     private val version = "0.0.1-alpha"
     private val mimeTypes = mutableListOf("")
-    private val extensions = mutableListOf("asahi")
+    private val extensions = mutableListOf("com/skillw/asahi")
     override fun getEngineName(): String = "Asahi Engine"
 
     override fun getEngineVersion(): String = version
@@ -68,7 +69,38 @@ class AsahiEngineFactory : ScriptEngineFactory {
         return sb.toString()
     }
 
-    override fun getScriptEngine(): ScriptEngine {
-        return AsahiEngine(this)
+    override fun getScriptEngine(): AsahiEngine {
+        return AsahiEngine.create(this)
+    }
+
+    companion object {
+        private val fileToScript = ConcurrentHashMap<File, AsahiCompiledScript>()
+
+        @JvmStatic
+        infix fun add(pair: Pair<File, AsahiCompiledScript>) {
+            fileToScript += pair
+        }
+
+        @JvmStatic
+        fun addScript(file: File, script: AsahiCompiledScript) {
+            fileToScript += file to script
+        }
+
+        @JvmStatic
+        fun getScript(file: File): AsahiCompiledScript? {
+            return fileToScript[file]
+        }
+
+        @JvmStatic
+        fun search(path: String): AsahiCompiledScript? {
+            val file = File(path)
+            if (fileToScript.containsKey(file)) return fileToScript[file]
+            fileToScript.keys
+                .firstOrNull { it.name.endsWith(path) }
+                ?.let {
+                    return fileToScript[it]
+                }
+            return null
+        }
     }
 }

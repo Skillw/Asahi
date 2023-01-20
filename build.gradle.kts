@@ -27,7 +27,8 @@ taboolib {
     install("expansion-alkaid-redis")
     classifier = null
     version = "6.0.10-71"
-    relocate("com.esotericsoftware.reflectasm", "com.skillw.reflectasm")
+    relocate("com.esotericsoftware.reflectasm", "com.skillw.asahi.reflectasm")
+    relocate("com.google.gson", "com.skillw.asahi.gson")
 }
 
 repositories {
@@ -36,6 +37,7 @@ repositories {
 
 dependencies {
     compileOnly("com.esotericsoftware:reflectasm:1.11.9")
+    compileOnly("com.google.code.gson:gson:2.9.0")
     compileOnly(kotlin("stdlib-jdk8"))
     compileOnly(fileTree("libs"))
 }

@@ -2,8 +2,6 @@ package com.skillw.asahi.internal.util;
 
 import com.esotericsoftware.reflectasm.FieldAccess;
 import com.esotericsoftware.reflectasm.MethodAccess;
-import com.skillw.pouvoir.internal.manager.PouConfig;
-import org.bukkit.Bukkit;
 import taboolib.common.env.RuntimeDependency;
 
 import java.util.ArrayList;
@@ -12,7 +10,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
-@RuntimeDependency(value = "com.esotericsoftware:reflectasm:1.11.9", relocate = {"!com.esotericsoftware.reflectasm", "com.skillw.reflectasm"})
+@RuntimeDependency(value = "com.esotericsoftware:reflectasm:1.11.9", relocate = {"!com.esotericsoftware.reflectasm", "com.skillw.asahi.reflectasm"})
 public class AsahiClassBean {
     private static final String IS_PREFIX = "is";
     private static final String GET_PREFIX = "get";
@@ -46,10 +44,6 @@ public class AsahiClassBean {
                 this.singleParam.put(name, index);
             }
         }
-
-        if (PouConfig.INSTANCE.getDebug()) {
-            Bukkit.getConsoleSender().sendMessage(this.info.toArray(new String[]{}));
-        }
     }
 
     public static AsahiClassBean of(Class<?> clazz) {
@@ -77,9 +71,6 @@ public class AsahiClassBean {
     private boolean ifBean(String name, String prefix, Consumer<String> consumer) {
         if (!name.startsWith(prefix)) {
             return false;
-        }
-        if (PouConfig.INSTANCE.getDebug()) {
-            this.info.add(prefix + "  :  " + name);
         }
         consumer.accept(name);
         return true;

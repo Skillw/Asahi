@@ -10,7 +10,11 @@ import taboolib.common.env.RuntimeDependency
  * @constructor Create empty Gson utils
  */
 @RuntimeDependencies(
-    RuntimeDependency("com.google.code.gson:gson:2.9.0", test = "com.google.gson.Gson")
+    RuntimeDependency(
+        "com.google.code.gson:gson:2.9.0",
+        test = "com.google.gson.Gson",
+        relocate = ["!com.google.gson", "com.skillw.asahi.gson"]
+    )
 )
 object Gson
 

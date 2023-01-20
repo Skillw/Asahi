@@ -6,7 +6,18 @@ plugins {
     id("org.jetbrains.dokka") version "1.7.20"
 }
 
+val order: String? by project
+
+task("versionModify") {
+    project.version = project.version.toString() + (order?.let { "-$it" } ?: "")
+}
+
 taboolib {
+    description {
+        contributors {
+            name("Glom_")
+        }
+    }
     options("skip-kotlin-relocate")
     install("common")
     install("common-5")

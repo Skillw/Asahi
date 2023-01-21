@@ -22,7 +22,11 @@ internal object PrefixDebug {
 
     @AsahiPrefix(["debug"], "lang")
     private fun debugFunc() = prefixParser {
-        when (val top = next()) {
+        when (next()) {
+            "context" -> result {
+                debug(context())
+            }
+
             "bean" ->
                 when (val type = next()) {
                     "info" -> {

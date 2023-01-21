@@ -10,7 +10,7 @@ open class Namespace(override val key: String, val shared: Boolean = false) : As
     internal val prefixMap = HashMap<String, BasePrefix<*>>()
 
     /** Infix 中缀解释器容器， 类型 -> 中缀解释器 */
-    internal val infixMap = java.util.HashMap<Class<*>, BaseInfix<*>>()
+    internal val infixMap = HashMap<Class<*>, BaseInfix<*>>()
 
     internal val allInfixTokens = HashSet<String>()
 
@@ -29,30 +29,30 @@ open class Namespace(override val key: String, val shared: Boolean = false) : As
         }
     }
 
-    fun <T : Any> getAction(type: Class<T>): BaseInfix<T> {
+    fun <T : Any> getInfix(type: Class<T>): BaseInfix<T> {
         return infixMap[type] as? BaseInfix<T>? ?: kotlin.run {
-            val newAction = BaseInfix.createInfix(type)
+            val infix = BaseInfix.createInfix(type)
             infixMap.entries.sortedWith { a, b ->
                 if (a.key.isAssignableFrom(b.key)) -1 else 1
             }.forEach {
-                newAction.putAll(it.value)
+                infix.putAll(it.value)
             }
-            newAction.apply { register() }
+            infix.apply { register() }
         }
     }
 
-    fun registerInfix(action: BaseInfix<*>) {
-        val type = action.key
+    fun registerInfix(infix: BaseInfix<*>) {
+        val type = infix.key
         if (infixMap.containsKey(type)) {
-            infixMap[type]?.putAll(action)
+            infixMap[type]?.putAll(infix)
             return
         }
-        infixMap[type] = action
-        action.actions.keys.forEach(allInfixTokens::add)
+        infixMap[type] = infix
+        infix.actions.keys.forEach(allInfixTokens::add)
     }
 
-    fun hasInfix(action: String?): Boolean {
-        return allInfixTokens.contains(action)
+    fun hasInfix(token: String?): Boolean {
+        return allInfixTokens.contains(token)
     }
 
     fun hasInfix(type: Class<*>): Boolean {
@@ -61,7 +61,7 @@ open class Namespace(override val key: String, val shared: Boolean = false) : As
 
     @Suppress("UNCHECKED_CAST")
     fun <T : Any> infixOf(any: T): BaseInfix<T> {
-        return getAction(any::class.java as Class<T>)
+        return getInfix(any::class.java as Class<T>)
     }
 
     override fun register() {

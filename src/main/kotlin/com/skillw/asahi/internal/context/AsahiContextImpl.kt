@@ -21,7 +21,9 @@ internal class AsahiContextImpl private constructor(
     private val data: MutableMap<String, Any> = HashMap(),
 ) : AsahiContext, MutableMap<String, Any> by data {
 
-    private constructor(other: AsahiContext) : this(HashMap(other))
+    private constructor(other: AsahiContext) : this(HashMap()) {
+        putAll(other)
+    }
 
     private val onExit: Deque<() -> Unit> = LinkedBlockingDeque()
 
@@ -81,13 +83,14 @@ internal class AsahiContextImpl private constructor(
     override fun import(vararg paths: String) {
         paths.forEach {
             AsahiEngineFactory.search(it)?.let { script ->
-                functions.putAll(script.engine.context().functions)
+                putAll(script.engine.context())
             }
         }
     }
 
-    override fun select(obj: Any) {
+    override fun <R : Any> select(obj: R): R {
         put("@selector", obj)
+        return obj
     }
 
 
@@ -132,6 +135,15 @@ internal class AsahiContextImpl private constructor(
     override fun <R> R.ifDebug(todo: (R) -> Unit): R {
         if (debug) todo(this)
         return this
+    }
+
+    override fun <R> temp(key: String, value: Any, todo: () -> R): R {
+        val origin = get(key)
+        put(key, value)
+        val result = todo()
+        remove(key)
+        origin?.let { put(key, it) }
+        return result
     }
 
     override fun reset() {

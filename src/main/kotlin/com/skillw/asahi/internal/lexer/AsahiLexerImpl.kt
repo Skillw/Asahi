@@ -65,11 +65,11 @@ internal class AsahiLexerImpl : AsahiLexer {
     /**
      * Except
      *
-     * @param excepts
+     * @param expects
      * @return
      */
-    override fun expect(vararg excepts: String): Boolean {
-        return excepts.any {
+    override fun expect(vararg expects: String): Boolean {
+        return expects.any {
             (peekNextIgnoreBlank() == it).also { bool ->
                 if (bool) {
                     next()
@@ -142,17 +142,19 @@ internal class AsahiLexerImpl : AsahiLexer {
 
     private fun trulyNext(): String = tokens[++index]
 
-    override fun splitTill(from: String, to: String, started: Boolean): ArrayList<String> {
-        var count = if (started) 1 else 0
+    override fun splitTill(from: String, to: String): ArrayList<String> {
+        var count = if (tokens.getOrNull(currentIndex()) == "{") 1 else 0
         val tokens = ArrayList<String>()
         while (hasNext()) {
-            when (trulyNext()) {
+            when (val next = trulyNext()) {
                 from ->
-                    if (count++ == 0) continue
+                    if (count++ == 0) {
+                        continue
+                    } else tokens.add(next)
 
-                to -> if (--count <= 0) return tokens
+                to -> if (--count <= 0) return tokens else tokens.add(next)
+                else -> tokens.add(next)
             }
-            tokens.add(current())
         }
         return tokens
     }

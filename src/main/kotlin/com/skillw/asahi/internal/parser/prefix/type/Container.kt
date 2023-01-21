@@ -47,10 +47,10 @@ private fun list() = typeParser(List::class.java, MutableList::class.java) {
 }
 
 private fun AsahiLexer.parseList(): Quester<MutableList<Any?>> {
-    expect("[", "(")
+    this.expect("[", "(")
     val list = LinkedList<Any?>()
     do {
-        list += if (expect("*")) questSafely<Any?>().quester {
+        list += if (this.expect("*")) questSafely<Any?>().quester {
             when (it) {
                 is Collection<*>,
                 -> list.addAll(it)
@@ -61,8 +61,8 @@ private fun AsahiLexer.parseList(): Quester<MutableList<Any?>> {
                 else -> it
             }
         } else questSafely<Any?>()
-        expect(",")
-    } while (!expect("]", ")"))
+        this.expect(",")
+    } while (!this.expect("]", ")"))
     return quester {
         val result = ArrayList<Any?>()
         list.forEach {
@@ -77,15 +77,15 @@ private fun AsahiLexer.parseList(): Quester<MutableList<Any?>> {
 
 @AsahiTypeParser
 private fun map() = typeParser(Map::class.java, MutableMap::class.java) {
-    expect("[")
+    expect("[", "{")
     val list = LinkedList<Pair<Quester<String>, Quester<Any?>>>()
     do {
         val key = quest<String>()
-        expect("to", "=", ":")
+        this.expect("to", "=", ":")
         val value = quest<Any?>()
         list += key to value
-        expect(",")
-    } while (!expect("]"))
+        this.expect(",")
+    } while (!expect("]", "}"))
     quester {
         val map = LinkedHashMap<String, Any?>()
         list.forEach { (key, value) ->

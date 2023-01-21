@@ -95,7 +95,7 @@ abstract class BaseInfix<T : Any>(override val key: Class<out T>, override val n
             namespace: String = "common",
             executor: InfixContext.(T) -> Any?,
         ) {
-            AsahiManager.getNamespace(namespace).getAction(type).infix(*keys) { executor(this, it) }
+            AsahiManager.getNamespace(namespace).getInfix(type).infix(*keys) { executor(this, it) }
         }
     }
 }

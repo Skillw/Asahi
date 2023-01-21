@@ -206,7 +206,7 @@ open class AsahiDataMap : HashMap<String, Any>() {
          * @return
          */
         fun AsahiDataMap.getListInner(key: String): List<Any>? {
-            return (get(key) as? List<Any>?)?.map { }
+            return (get(key) as? List<Any>?)?.map { it.analysisCast() }
         }
 
         /**

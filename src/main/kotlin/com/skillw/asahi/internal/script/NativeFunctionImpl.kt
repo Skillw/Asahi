@@ -4,8 +4,8 @@ import com.skillw.asahi.api.AsahiAPI.compile
 import com.skillw.asahi.api.member.context.AsahiContext
 import com.skillw.asahi.api.script.AsahiCompiledScript
 import com.skillw.asahi.api.script.NativeFunction
-import com.skillw.asahi.util.AsahiDataMap
 import com.skillw.asahi.util.toLazyMap
+import com.skillw.asahi.util.AsahiDataMap
 
 
 /**
@@ -43,7 +43,7 @@ class NativeFunctionImpl constructor(
             invokeContext.forEach { key, value ->
                 if (key == "super.args" || key == "args") return@forEach
                 if (key.startsWith("@")) return@forEach
-                if (key !in paramNames && context.containsKey(key)) context[key] = value
+                if (key !in paramNames && context.containsKey(key) && !initial.containsKey(key)) context[key] = value
             }
         }
     }
@@ -66,10 +66,12 @@ class NativeFunctionImpl constructor(
         }
 
         @JvmStatic
-        fun deserialize(key: String, map: Map<String, Any>): NativeFunction {
+        fun deserialize(key: String, map: Map<String, Any>, vararg namespaces1: String): NativeFunction {
             val data = AsahiDataMap().apply { putAll(map) }
             val params = data.get("params", emptyList<String>()).toTypedArray()
-            val namespaces = data.get("namespaces", emptyList<String>())
+            val namespaces = data.get("namespaces", arrayListOf<String>()).apply {
+                addAll(namespaces1)
+            }
             val import = data.get("import", emptyList<String>()).toTypedArray()
             val context = data.get("context", emptyMap<String, Any>()).toLazyMap()
             val script = data.get("content", "print 'Not yet implemented'").compile(*namespaces.toTypedArray())

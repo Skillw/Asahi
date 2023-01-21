@@ -30,7 +30,7 @@ object AsahiManager {
 
 
     fun getNamespace(key: String): Namespace {
-        return namespaces.getOrPut(key) { Namespace(key) }
+        return namespaces.computeIfAbsent(key) { Namespace(key) }
     }
 
     fun getNamespaces(vararg keys: String): Set<Namespace> {

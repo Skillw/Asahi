@@ -17,9 +17,6 @@ import com.skillw.asahi.internal.util.Time
  */
 interface AsahiLexer : NamespaceHolder<AsahiLexer> {
 
-    @Deprecated("拼写错误捏 真丢人呢", ReplaceWith("expect"))
-    fun except(vararg excepts: String): Boolean = expect(*excepts)
-
     /**
      * 预期下一个token
      *
@@ -96,7 +93,7 @@ interface AsahiLexer : NamespaceHolder<AsahiLexer> {
      * @param to 结尾Token
      * @return 中间的Tokens
      */
-    fun splitTill(from: String, to: String, started: Boolean = false): List<String>
+    fun splitTill(from: String, to: String): List<String>
 
     /**
      * 将一些Token 分割出来

@@ -48,14 +48,35 @@ private fun exit() = prefixParser {
 
 @AsahiPrefix(["{"], "lang")
 private fun block() = prefixParser {
-    val script = splitTill("{", "}", true).compile(*namespaceNames())
+    val script = splitTill("{", "}").compile(*namespaceNames())
     result { script.run() }
 }
 
 @AsahiPrefix(["using"], "lang")
 private fun using() = prefixParser {
+    val names = ArrayList<String>()
+    if (peek() == "[") {
+        while (!expect("]")) {
+            expect(",")
+            names += next()
+        }
+    } else names.add(next())
+    if (peek() == "{") {
+        val todo = parseScript(*names.toTypedArray(), *namespaceNames())
+        result {
+            todo.run()
+        }
+    } else {
+        addNamespaces(*names.toTypedArray())
+        result { names }
+    }
+}
+
+@AsahiPrefix(["unusing"], "lang")
+private fun unusing() = prefixParser {
     val name = next()
-    addNamespaces(name)
+    removeSpaces(name)
     result { name }
 }
+
 

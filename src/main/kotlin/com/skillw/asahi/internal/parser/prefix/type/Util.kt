@@ -11,7 +11,7 @@ import com.skillw.asahi.internal.util.Time
 @AsahiTypeParser
 private fun pair() = typeParser(Pair::class.java) {
     val first = quest<Any?>()
-    expect("to", "=", ":")
+    this.expect("to", "=", ":")
     val second = quest<Any?>()
     quester { first.get() to second.get() }
 }

@@ -8,6 +8,7 @@ import com.skillw.asahi.api.member.namespace.Namespace
 import com.skillw.asahi.api.member.quest.Quester
 import com.skillw.asahi.api.quester
 import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 
 /**
  * @className InlineReaderImpl
@@ -31,14 +32,14 @@ internal class InlineAnalysisImpl private constructor(val text: String) :
     }
 
     companion object {
-        private val cache = HashMap<Int, InlineAnalysis>()
+        private val cache = ConcurrentHashMap<Int, InlineAnalysis>()
 
         //字符是否符合命名规范
         private val charRegex = Regex("([^\\x00-\\xff]|[a-zA-Z0-9_$.])")
 
         @JvmStatic
         fun of(str: String): InlineAnalysis {
-            return cache.getOrPut(str.hashCode()) { InlineAnalysisImpl(str) }
+            return cache.computeIfAbsent(str.hashCode()) { InlineAnalysisImpl(str) }
         }
     }
 

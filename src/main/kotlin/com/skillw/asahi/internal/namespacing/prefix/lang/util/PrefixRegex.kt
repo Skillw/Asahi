@@ -7,14 +7,14 @@ import com.skillw.asahi.api.quester
 import com.skillw.asahi.api.script.NativeFunction
 
 internal object PrefixRegex {
-    @AsahiPrefix(["regexOf"], "lang")
+    @AsahiPrefix(["regexOf"], "regex")
     private fun regexOf() = prefixParser {
         val regex = quest<String>()
         val options = if (expect("with")) quest() else quester { emptySet<RegexOption>() }
         result { regex.get().toRegex(options.get()) }
     }
 
-    @AsahiPrefix(["regex"], "lang")
+    @AsahiPrefix(["regex"], "regex")
     private fun regex() = prefixParser {
         val regex = if (expect("of")) quest<String>().quester { it.toRegex() } else quester { selector() }
         when (val type = next()) {
@@ -49,7 +49,6 @@ internal object PrefixRegex {
                     when (val obj = replacement.get()) {
                         is String -> regex.get().replace(input.get(), obj)
                         is NativeFunction -> {
-                            println(1)
                             regex.get().replace(input.get()) {
                                 obj.invoke(this, it).toString()
                             }

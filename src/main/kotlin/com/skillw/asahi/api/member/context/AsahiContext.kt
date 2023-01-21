@@ -18,7 +18,7 @@ interface AsahiContext : MutableMap<String, Any>, Bindings {
 
     fun import(vararg paths: String)
 
-    fun select(obj: Any)
+    fun <R : Any> select(obj: R): R
     fun <R> selector(): R {
         return selectorSafely() ?: error("No Required Selector Selected!")
     }
@@ -52,6 +52,7 @@ interface AsahiContext : MutableMap<String, Any>, Bindings {
     fun ifDebug(todo: () -> Unit)
     fun <R> R.ifDebug(todo: (R) -> Unit): R
 
+    fun <R> temp(key: String, value: Any, todo: () -> R): R
 
     companion object {
         //给脚本用的 不用填参数

@@ -35,7 +35,7 @@ inline fun <reified R> AsahiLexer.questSafely(): Quester<R?> {
             ?: if (AsahiManager.hasParser(R::class.java)) {
                 AsahiManager.getParser(R::class.java)?.parseWith(this)
             } else quester { token.cast() }
-    getter ?: error("Cannot quester $token")
+    getter ?: error("Cannot quest $token")
     getter = if (getter !is VarBeanQuester) InfixParser.get().parseAction(this, getter) else getter
     val index = currentIndex()
     return object : Quester<R?> {

@@ -4,7 +4,7 @@ import com.skillw.asahi.api.annotation.AsahiInfix
 import com.skillw.asahi.api.member.parser.infix.namespacing.BaseInfix
 
 @AsahiInfix
-internal object InfixMatchResult : BaseInfix<MatchResult>(MatchResult::class.java) {
+internal object InfixMatchResult : BaseInfix<MatchResult>(MatchResult::class.java, "regex") {
     init {
         infix("value") { result ->
             result.value

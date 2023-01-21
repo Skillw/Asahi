@@ -9,6 +9,7 @@ import com.skillw.asahi.internal.context.AsahiContextImpl
 import java.io.File
 import java.io.Reader
 import java.util.concurrent.ConcurrentHashMap
+import javax.script.Bindings
 import javax.script.ScriptContext
 import javax.script.ScriptEngineFactory
 
@@ -23,10 +24,23 @@ class AsahiEngineImpl private constructor(
     context: AsahiContext = AsahiContext.create(),
 ) :
     AsahiEngine(context) {
+
+
+    private val cache = ConcurrentHashMap<Int, AsahiCompiledScript>()
+
     override fun eval(script: String, context: ScriptContext): Any? {
         val other = context.getBindings(ScriptContext.ENGINE_SCOPE) as? AsahiContext ?: return null
         context().putAll(other)
         return compile(script).run(context())
+    }
+
+    override fun eval(script: String, bindings: Bindings): Any? {
+        context().putAll(bindings)
+        return compile(script).run(context())
+    }
+
+    override fun eval(reader: Reader, bindings: Bindings): Any? {
+        return eval(reader.readText(), bindings)
     }
 
     override fun eval(reader: Reader, context: ScriptContext): Any? {
@@ -50,18 +64,24 @@ class AsahiEngineImpl private constructor(
     }
 
     override fun compile(script: String, vararg namespaces: String): AsahiCompiledScript {
-        return cache.getOrPut(script.hashCode()) {
+        val hash = script.hashCode()
+        return if (cache.containsKey(hash)) {
+            cache[hash]!!
+        } else {
             AsahiCompiledScriptImpl(this, script).also { compiledScript ->
                 AsahiLexer.of(script).addNamespaces(*namespaces).questAllTo(compiledScript)
-            }
+            }.also { cache[hash] = it }
         }
     }
 
     override fun compile(tokens: Collection<String>, vararg namespaces: String): AsahiCompiledScript {
-        return cache.getOrPut(tokens.hashCode()) {
+        val hash = tokens.hashCode()
+        return if (cache.containsKey(hash)) {
+            cache[hash]!!
+        } else {
             AsahiCompiledScriptImpl(this, tokens.joinToString(" ")).also { compiledScript ->
                 AsahiLexer.of(tokens).addNamespaces(*namespaces).questAllTo(compiledScript)
-            }
+            }.also { cache[hash] = it }
         }
     }
 
@@ -94,10 +114,6 @@ class AsahiEngineImpl private constructor(
     override fun invokeFunction(name: String, vararg args: Any): Any? {
         return context().invoke(name, *args)
     }
-
-
-    private val cache = ConcurrentHashMap<Int, AsahiCompiledScript>()
-
 
     override fun <T : Any?> getInterface(clasz: Class<T>?): T {
         TODO("Not yet implemented")

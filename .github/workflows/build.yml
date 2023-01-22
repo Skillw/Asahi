@@ -90,7 +90,7 @@ jobs:
           path: build/libs/
   release:
     name: Release Jar
-    needs: [ build build-api ]
+    needs: [ build, build-api ]
     runs-on: ubuntu-latest
     steps:
       - name: checkout repository

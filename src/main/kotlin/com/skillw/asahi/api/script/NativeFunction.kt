@@ -3,7 +3,24 @@ package com.skillw.asahi.api.script
 import com.skillw.asahi.api.member.context.AsahiContext
 import com.skillw.asahi.internal.script.NativeFunctionImpl
 
+/**
+ * Native function
+ *
+ * Asahi内的函数
+ *
+ * @constructor Create empty Native function
+ * @property key 函数名
+ * @property paramNames 参数名
+ * @property content 执行内容
+ */
 abstract class NativeFunction(val key: String, val paramNames: Array<String>, val content: AsahiCompiledScript) {
+    /**
+     * 调用此函数
+     *
+     * @param context 上下文
+     * @param params 参数
+     * @return 结果
+     */
     abstract fun invoke(context: AsahiContext, vararg params: Any?): Any?
 
     override fun toString(): String {
@@ -32,5 +49,6 @@ abstract class NativeFunction(val key: String, val paramNames: Array<String>, va
         }
     }
 
+    /** Param count */
     abstract val paramCount: Int
 }

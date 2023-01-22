@@ -23,14 +23,14 @@ internal object NamespaceCallParser : TopPrefixParser<Any?>("namespace-call-func
         return function.parseWith(this@parse) as Quester<Any?>?
     }
 
-    override fun <R> Quester<R>.langQuester(): Quester<R> {
+    override fun <R> Quester<R>.topQuester(): Quester<R> {
         return object : Quester<R> {
             override fun AsahiContext.execute(): R {
-                return this@langQuester.run(this)
+                return this@topQuester.run(this)
             }
 
             override fun toString(): String {
-                return "Namespace Call Quester - $key ${this@langQuester}"
+                return "Namespace Call Quester - $key ${this@topQuester}"
             }
         }
     }

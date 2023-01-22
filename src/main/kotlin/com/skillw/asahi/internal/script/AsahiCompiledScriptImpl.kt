@@ -45,7 +45,10 @@ class AsahiCompiledScriptImpl internal constructor(engine: AsahiEngine, val raw:
                     }
             }
             return@result previous.ifDebug { last -> debug("Return: $last") }.also { debugOff() }
-        }.getOrThrow()
+        }.run {
+            if (isSuccess) getOrThrow()
+            else exceptionOrNull()?.also { exit();it.printStackTrace() }
+        }
     }
 
     override fun add(quester: Quester<Any?>) {

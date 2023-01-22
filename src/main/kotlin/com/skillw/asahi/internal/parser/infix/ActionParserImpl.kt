@@ -52,7 +52,7 @@ internal object ActionParserImpl : InfixParser() {
                     if (this.token == "@NONE")
                         this.token = next()
                     //基于对象类型 获取BaseAction<T>对象 并调用动作
-                    obj = baseInfix.run { action(obj) } ?: return@run "null"
+                    obj = baseInfix.run { infix(obj) } ?: return@run "null"
                     baseInfix = infixOf(obj) as? BaseInfix<Any>? ?: return@infixQuester obj
                     this.token = "@NONE"
                 }

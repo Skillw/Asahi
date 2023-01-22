@@ -4,7 +4,7 @@ import com.skillw.asahi.api.member.context.AsahiContext
 
 fun interface Quester<R> {
     /**
-     * 在上下文中执行 (为什么Kotlin1.7.20的上下文约束还没有转正)
+     * 在上下文中执行/获取
      *
      * @return R
      * @receiver AsahiContext

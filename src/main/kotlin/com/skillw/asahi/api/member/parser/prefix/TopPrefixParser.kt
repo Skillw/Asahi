@@ -7,7 +7,11 @@ import com.skillw.asahi.api.member.lexer.AsahiLexer
 import com.skillw.asahi.api.member.quest.Quester
 
 /**
- * @className LangParser
+ * @className TopPrefixParser
+ *
+ * 顶级前缀解释器
+ *
+ * 主要负责: 解释变量 解释字符串 选取前缀解释器 选取中缀解释器 解释变量Bean动作
  *
  * @author Glom
  * @date 2023/1/12 23:50 Copyright 2023 user. All rights reserved.
@@ -15,28 +19,63 @@ import com.skillw.asahi.api.member.quest.Quester
 abstract class TopPrefixParser<R>(override val key: String, val priority: Int) : AsahiRegistrable<String>,
     PrefixParser<R>,
     Comparable<TopPrefixParser<*>> {
+    /**
+     * 能否解释
+     *
+     * @param token token
+     * @return 能否解释
+     */
     protected abstract fun AsahiLexer.canParse(token: String): Boolean
+
+    /**
+     * 解释
+     *
+     * @param token token
+     * @return 结果
+     */
     protected abstract fun AsahiLexer.parse(token: String): Quester<R>?
+
+    /**
+     * 能否解释
+     *
+     * @param lexer 词法器
+     * @param token token
+     * @return 能否解释
+     * @return
+     */
     fun canParseWith(lexer: AsahiLexer, token: String): Boolean {
         return lexer.canParse(token)
     }
 
+    /**
+     * 解释
+     *
+     * @param lexer 词法器
+     * @param token token
+     * @return 结果
+     */
     fun parseWith(lexer: AsahiLexer, token: String): Quester<R>? {
-        return lexer.parse(token)?.langQuester()
+        return lexer.parse(token)?.topQuester()
     }
 
     override fun parseWith(lexer: AsahiLexer): Quester<R>? {
         return parseWith(lexer, lexer.next()) ?: kotlin.run { lexer.previous();null }
     }
 
-    protected open fun <R> Quester<R>.langQuester(): Quester<R> {
+    /**
+     * 转为 Top Quester
+     *
+     * @param R
+     * @return
+     */
+    protected open fun <R> Quester<R>.topQuester(): Quester<R> {
         return object : Quester<R> {
             override fun AsahiContext.execute(): R {
-                return this@langQuester.run(this)
+                return this@topQuester.run(this)
             }
 
             override fun toString(): String {
-                return "Lang Quester - $key ($priority)"
+                return "Top Quester - $key ($priority)"
             }
         }
     }

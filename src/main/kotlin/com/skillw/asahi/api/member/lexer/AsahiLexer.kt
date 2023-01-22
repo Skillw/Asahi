@@ -169,31 +169,81 @@ interface AsahiLexer : NamespaceHolder<AsahiLexer> {
 
     /** 寻求 Time */
     fun questTime() = quest<Time>()
+
+    /** 跳过下一个语句 */
     fun skip() = questSafely<Any?>()
 
     /** 寻求 Tick */
     fun questTick() = quest<Time>().quester { it.toTick() }
+
+    /**
+     * 将每个Token作为接收器
+     *
+     * @param receiver
+     * @receiver
+     */
     fun withEach(receiver: String.(Int) -> Unit)
 
-    fun condition(
+    /**
+     * 寻求条件表达式
+     *
+     * @param till 截止Token
+     * @param boolQuester 自定义bool寻求函数
+     * @return 条件表达式Quester
+     * @receiver
+     */
+    fun questCondition(
         vararg till: String,
         boolQuester: AsahiLexer.() -> Quester<Boolean> = { questBoolean() },
     ): Quester<Boolean>
 
+    /**
+     * 报错，会打印当前读取位置与堆栈
+     *
+     * @param message 报错信息
+     * @return
+     */
     fun error(message: String): Nothing
+
+    /** 开启编译时调试 */
     fun debugOn()
+
+    /** 关闭编译时调试 */
     fun debugOff()
 
+    /**
+     * 将词法器中所有Quester都塞到脚本里
+     *
+     * @param script 脚本
+     */
     fun questAllTo(script: AsahiCompiledScript)
 
+    /**
+     * 解析一段无参函数
+     *
+     * @param namespaces 命名空间
+     * @return
+     */
     fun parseScript(vararg namespaces: String): AsahiCompiledScript
 
     companion object {
+        /**
+         * 根据脚本生成词法器
+         *
+         * @param script String 脚本字符串
+         * @return AsahiLexer 词法器
+         */
         @JvmStatic
         fun of(script: String): AsahiLexer {
             return AsahiLexerImpl.of(script)
         }
 
+        /**
+         * 根据已分割好的Tokens 生成词法器
+         *
+         * @param tokens Collection<String> 已分割好的Tokens
+         * @return AsahiLexer 词法器
+         */
         @JvmStatic
         fun of(tokens: Collection<String>): AsahiLexer {
             return AsahiLexerImpl.of(tokens)

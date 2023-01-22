@@ -16,7 +16,7 @@ import java.util.*
 //单路
 @AsahiPrefix(["if"], "lang")
 private fun `if`() = prefixParser {
-    val condition = condition("then")
+    val condition = questCondition("then")
     expect("then")
     val ifTrue = quest<Any?>()
     val ifFalse = if (expect("else")) quest<Any?>() else quester { }
@@ -34,7 +34,7 @@ private fun `when`() = prefixParser {
     expect("{")
     while (expect("case", "when")) {
         value?.let {
-            val condition = condition("->") {
+            val condition = questCondition("->") {
                 val symbol = next()
                 val other = quest<Any>()
                 quester { com.skillw.asahi.util.check(value, symbol, other) }
@@ -42,7 +42,7 @@ private fun `when`() = prefixParser {
             expect("->")
             pairs.add(condition to quest())
         } ?: kotlin.run {
-            val condition = condition("->")
+            val condition = questCondition("->")
             expect("->")
             val ifTrue = quest<Any>()
             pairs.add(condition to ifTrue)

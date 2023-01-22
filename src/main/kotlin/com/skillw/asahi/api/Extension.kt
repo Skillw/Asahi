@@ -22,10 +22,10 @@ import com.skillw.asahi.util.castSafely
  */
 
 /**
- * Quest
+ * 安全寻求下一个值
  *
- * @param R
- * @return
+ * @param R 类型
+ * @return 结果
  */
 @Suppress("IMPLICIT_CAST_TO_ANY", "UNCHECKED_CAST")
 inline fun <reified R> AsahiLexer.questSafely(): Quester<R?> {
@@ -36,7 +36,7 @@ inline fun <reified R> AsahiLexer.questSafely(): Quester<R?> {
                 AsahiManager.getParser(R::class.java)?.parseWith(this)
             } else quester { token.cast() }
     getter ?: error("Cannot quest $token")
-    getter = if (getter !is VarBeanQuester) InfixParser.get().parseAction(this, getter) else getter
+    getter = if (getter !is VarBeanQuester) InfixParser.get().parseInfix(this, getter) else getter
     val index = currentIndex()
     return object : Quester<R?> {
         override fun AsahiContext.execute(): R? {
@@ -55,40 +55,88 @@ inline fun <reified R> AsahiLexer.questSafely(): Quester<R?> {
     }
 }
 
+/**
+ * 强制寻求下一个值
+ *
+ * @param R 类型
+ * @return 结果
+ */
 @Suppress("IMPLICIT_CAST_TO_ANY", "UNCHECKED_CAST")
 inline fun <reified R> AsahiLexer.quest(): Quester<R> {
     return questSafely<R>() as Quester<R>
 }
 
+/**
+ * 创建对象寻求者
+ *
+ * @param quest 执行内容
+ * @param R 类型
+ * @return 对象寻求者
+ * @receiver
+ */
 fun <R> quester(quest: AsahiContext.() -> R): Quester<R> {
     return Quester { quest() }
 }
 
+/**
+ * 将对象寻求者转为其它类型的对象寻求者
+ *
+ * @param quest 原对象寻求者
+ * @param T 原类型
+ * @param R 返回类型
+ * @return 返回类型的对象寻求者
+ * @receiver
+ */
 fun <T, R> Quester<T>.quester(quest: AsahiContext.(T) -> R): Quester<R> {
     return Quester { quest(get()) }
 }
 
 
+/**
+ * 懒人式对象寻求着
+ *
+ * @param quest
+ * @param R
+ * @return
+ * @receiver
+ */
 fun <R> lazyQuester(quest: AsahiContext.() -> R): LazyQuester<R> {
     return LazyQuester { quest() }
 }
 
+/**
+ * 创建前缀解释器
+ *
+ * @param parseFunc 解释内容
+ * @param R 返回类型
+ * @return 前缀解释器
+ * @receiver
+ */
 fun <R> prefixParser(
-    compileFunc: PrefixParser<R>.() -> Quester<R>,
+    parseFunc: PrefixParser<R>.() -> Quester<R>,
 ): PrefixCreator<R> {
     return object : PrefixCreator<R> {
         override fun PrefixParser<R>.parse(): Quester<R> {
-            return compileFunc()
+            return parseFunc()
         }
     }
 }
 
+/**
+ * 创建类型解释器
+ *
+ * @param types 类型
+ * @param parseFunc 解释内容
+ * @param R 返回类型
+ * @return 类型解释器
+ * @receiver
+ */
 fun <R> typeParser(
     vararg types: Class<*>,
-    quest: AsahiLexer.() -> Quester<R>,
+    parseFunc: AsahiLexer.() -> Quester<R>,
 ): TypeParser<R> {
     return object : TypeParser<R>(*types) {
-        override fun AsahiLexer.parse() = quest()
+        override fun AsahiLexer.parse() = parseFunc()
     }
 }
 

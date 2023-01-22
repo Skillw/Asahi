@@ -19,7 +19,7 @@ import java.util.*
  */
 @AsahiPrefix(["while"], "lang")
 private fun `while`() = prefixParser {
-    val condition = condition("label", "then")
+    val condition = questCondition("label", "then")
     runLoop { loopOnce ->
         while (condition.get()) {
             when (loopOnce()) {

@@ -9,21 +9,21 @@ import com.skillw.asahi.api.member.quest.Quester
 @AsahiTopParser
 internal object PrefixCallParser : TopPrefixParser<Any?>("call-function", 999) {
     override fun AsahiLexer.canParse(token: String): Boolean {
-        return hasFunction(token)
+        return hasPrefix(token)
     }
 
     override fun AsahiLexer.parse(token: String): Quester<Any?>? {
-        return getFunction(token).firstOrNull()?.parseWith(this@parse) as Quester<Any?>?
+        return getPrefix(token).firstOrNull()?.parseWith(this@parse) as Quester<Any?>?
     }
 
-    override fun <R> Quester<R>.langQuester(): Quester<R> {
+    override fun <R> Quester<R>.topQuester(): Quester<R> {
         return object : Quester<R> {
             override fun AsahiContext.execute(): R {
-                return this@langQuester.run(this)
+                return this@topQuester.run(this)
             }
 
             override fun toString(): String {
-                return "Prefix Quester - $key ${this@langQuester}"
+                return "Prefix Quester - $key ${this@topQuester}"
             }
         }
     }

@@ -8,5 +8,4 @@ import javax.script.SimpleScriptContext
  * @author Glom
  * @date 2023/1/19 22:33 Copyright 2023 user. All rights reserved.
  */
-class AsahiScriptContext : SimpleScriptContext() {
-}
+class AsahiScriptContext : SimpleScriptContext()

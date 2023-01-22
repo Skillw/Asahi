@@ -5,14 +5,14 @@ import com.skillw.asahi.api.member.parser.prefix.type.JavaTypeParser;
 import com.skillw.asahi.api.member.quest.Quester;
 import org.jetbrains.annotations.NotNull;
 
-import static com.skillw.asahi.api.ExtentionKt.quester;
+import static com.skillw.asahi.api.ExtensionKt.quester;
 
 //@AsahiParser
 public class ExampleParser extends JavaTypeParser<String> {
 
     @NotNull
     @Override
-    protected Quester<String> compile(@NotNull JavaLexer reader) {
+    protected Quester<String> parse(@NotNull JavaLexer reader) {
         String str = reader.next();
         return quester((context) -> {
             System.out.println(str);

@@ -1,10 +1,10 @@
 package com.skillw.asahi.api.annotation
 
 /**
- * Asahi action annotation
+ * Asahi Infix annotation
  *
  * 自动注册
  *
- * @constructor Asahi action annotation
+ * @constructor Asahi Infix annotation
  */
 annotation class AsahiInfix

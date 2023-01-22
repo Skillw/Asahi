@@ -18,13 +18,18 @@ abstract class JavaTypeParser<R>(
 
 
     override fun AsahiLexer.parse(): Quester<R> {
-        return JavaLexer(this).compile()
+        return JavaLexer(this).parse()
     }
 
-    protected abstract fun JavaLexer.compile(): Quester<R>
+    /**
+     * 类型解释器内容
+     *
+     * @return 解释结果
+     */
+    protected abstract fun JavaLexer.parse(): Quester<R>
 
     override fun parseWith(lexer: AsahiLexer): Quester<R> {
-        val parser = JavaLexer(lexer).compile()
+        val parser = JavaLexer(lexer).parse()
         return quester {
             parser.get()
         }

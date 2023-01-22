@@ -195,7 +195,7 @@ internal class AsahiLexerImpl : AsahiLexer {
         }
     }
 
-    override fun condition(
+    override fun questCondition(
         vararg till: String,
         boolParser: AsahiLexer.() -> Quester<Boolean>,
     ): Quester<Boolean> {

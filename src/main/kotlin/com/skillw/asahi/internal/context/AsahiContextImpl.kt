@@ -137,12 +137,23 @@ internal class AsahiContextImpl private constructor(
         return this
     }
 
-    override fun <R> temp(key: String, value: Any, todo: () -> R): R {
-        val origin = get(key)
-        put(key, value)
+    override fun <R> temp(vararg pairs: Pair<String, Any?>, todo: () -> R): R {
+        val origins = HashMap<String, Any>()
+        pairs.forEach { (key, value) ->
+            origins[key] = get(key) ?: Unit
+            if (value != null)
+                put(key, value)
+            else
+                remove(key)
+        }
         val result = todo()
-        remove(key)
-        origin?.let { put(key, it) }
+        pairs.forEach { (key, _) ->
+            remove(key)
+        }
+        origins.forEach { (key, value) ->
+            if (value == Unit) return@forEach
+            put(key, value)
+        }
         return result
     }
 

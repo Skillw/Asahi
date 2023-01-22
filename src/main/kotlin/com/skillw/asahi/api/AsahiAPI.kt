@@ -41,6 +41,14 @@ object AsahiAPI {
 
     private val default = AsahiEngineFactory().scriptEngine
 
+    /**
+     * 编译脚本
+     *
+     * @param namespaces Array<out String> 命名空间
+     * @param engine AsahiEngine 引擎
+     * @return AsahiCompiledScript 预编译脚本
+     * @receiver String
+     */
     @JvmStatic
     fun String.compile(vararg namespaces: String, engine: AsahiEngine = default): AsahiCompiledScript {
         return engine.compile(this, *namespaces)

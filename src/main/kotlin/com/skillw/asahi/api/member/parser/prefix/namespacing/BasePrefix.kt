@@ -10,7 +10,11 @@ import com.skillw.asahi.api.member.quest.Quester
 
 
 /**
- * @className FunctionQuester
+ * @className BasePrefix
+ *
+ * 前缀解释器
+ *
+ * 当词法器读到的token在names中时，则选择此前缀解释器进行解释
  *
  * @author Glom
  * @date 2022/12/25 13:39 Copyright 2022 user. All rights reserved.
@@ -20,10 +24,15 @@ abstract class BasePrefix<R>(
     vararg val alias: String,
     override val namespace: String = "common",
 ) : PrefixParser<R>, AsahiRegistrable<String>, Namespacing {
-    /** Names */
+    /** Tokens */
     val names: Set<String>
         get() = setOf(key, *alias)
 
+    /**
+     * 解释器执行内容
+     *
+     * @return 结果
+     */
     protected abstract fun AsahiLexer.parse(): Quester<R>
 
 

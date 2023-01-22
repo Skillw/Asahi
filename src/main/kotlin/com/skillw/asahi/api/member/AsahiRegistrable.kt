@@ -9,6 +9,7 @@ package com.skillw.asahi.api.member
  * 可注册的类
  */
 interface AsahiRegistrable<K> {
+    /** 键 */
     val key: K
     fun register()
 }

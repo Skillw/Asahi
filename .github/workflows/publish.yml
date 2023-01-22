@@ -18,6 +18,10 @@ jobs:
           java-version: 8.0
       - name: make gradle wrapper executable
         run: chmod +x ./gradlew
+      - name: Create Sign File
+        run: |
+          echo "${{secrets.SIGNING_SECRET_KEY_RING_FILE}}" > ~/.gradle/secring.pgp.b64
+          base64 -d ~/.gradle/secring.pgp.b64 > ~/.gradle/secring.pgp
       # 发布到仓库
       - name: publish
         id: publish_1

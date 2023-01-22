@@ -26,8 +26,8 @@ jobs:
         run: chmod +x ./gradlew
       - name: Create Sign File
         run: |
-          echo "${{secrets.SIGNING_SECRET_KEY_RING_FILE}}" > ~/.gradle/secring.pgp.b64
-          base64 -d ~/.gradle/secring.pgp.b64 > ~/.gradle/secring.pgp
+          echo "${{secrets.SIGNING_SECRET_KEY_RING_FILE}}" > ~/secring.pgp.b64
+          base64 -d ~/secring.pgp.b64 > ~/secring.pgp
       # 发布到仓库
       - name: publish
         id: publish_1
@@ -35,7 +35,7 @@ jobs:
         env:
           NEXUS_USERNAME: ${{ secrets.USERNAME }}
           NEXUS_PASSWORD: ${{ secrets.PASSWORD }}
-        run: ./gradlew publish -Papi=true -Pbuild=$GITHUB_RUN_NUMBER -Psigning.keyId=$SIGNING_KEY_ID -Psigning.password=$SIGNING_KEY_PASSWORD -Psigning.secretKeyRingFile=$(echo ~/.gradle/secring.pgp)
+        run: ./gradlew publish -Papi=true -Pbuild=$GITHUB_RUN_NUMBER -Psigning.keyId=$SIGNING_KEY_ID -Psigning.password=$SIGNING_KEY_PASSWORD -Psigning.secretKeyRingFile=$(echo ~/secring.pgp)
 
       # 发布到仓库: 重试-1
       - name: publish (retry 1)

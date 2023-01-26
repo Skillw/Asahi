@@ -1,10 +1,8 @@
 package com.skillw.asahi.internal
 
-import com.skillw.asahi.api.annotation.AsahiInfix
-import com.skillw.asahi.api.annotation.AsahiPrefix
-import com.skillw.asahi.api.annotation.AsahiTopParser
-import com.skillw.asahi.api.annotation.AsahiTypeParser
+import com.skillw.asahi.api.annotation.*
 import com.skillw.asahi.api.member.AsahiRegistrable
+import com.skillw.asahi.api.member.context.AsahiContext
 import com.skillw.asahi.api.member.parser.infix.namespacing.BaseInfix
 import com.skillw.asahi.api.member.parser.prefix.TopPrefixParser
 import com.skillw.asahi.api.member.parser.prefix.namespacing.BaseJavaPrefix
@@ -25,6 +23,8 @@ object AsahiLoader {
                 register<AsahiTopParser, TopPrefixParser<*>>()
                 register<AsahiTypeParser, TypeParser<*>>()
                 register<AsahiInfix, BaseInfix<*>>()
+                register<AsahiGetter, AsahiContext.Getter>()
+                register<AsahiSetter, AsahiContext.Setter>()
                 registerFunctions()
             }
         }
@@ -40,7 +40,7 @@ object AsahiLoader {
         val names = asahi.property<Array<String>>("names")!!
         val namespace = asahi.property<String>("namespace")!!
         val key = names.firstOrNull() ?: defaultName
-        register(key, *names, namespace)
+        register(key, *names, namespace = namespace)
     }
 
     private fun ClassStructure.registerFunctions() {

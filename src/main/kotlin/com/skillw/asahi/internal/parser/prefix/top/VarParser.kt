@@ -3,7 +3,6 @@ package com.skillw.asahi.internal.parser.prefix.top
 import com.skillw.asahi.api.annotation.AsahiTopParser
 import com.skillw.asahi.api.member.lexer.AsahiLexer
 import com.skillw.asahi.api.member.parser.prefix.TopPrefixParser
-import com.skillw.asahi.api.member.quest.LazyQuester
 import com.skillw.asahi.api.member.quest.Quester
 import com.skillw.asahi.api.quester
 import java.util.function.Supplier
@@ -22,10 +21,8 @@ internal object VarParser : TopPrefixParser<Any?>("var", 1) {
     override fun AsahiLexer.parse(token: String): Quester<Any?> {
         val varKey = token.substring(1)
         return quester {
-            (if (varKey.contains("."))
-                getDeep(varKey) else get(varKey))?.let {
+            get(varKey)?.let {
                 when (it) {
-                    is LazyQuester<*> -> it.run()
                     is Supplier<*> -> it.get()
                     else -> it
                 }

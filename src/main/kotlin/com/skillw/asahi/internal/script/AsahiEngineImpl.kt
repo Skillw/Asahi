@@ -64,7 +64,7 @@ class AsahiEngineImpl private constructor(
     }
 
     override fun compile(script: String, vararg namespaces: String): AsahiCompiledScript {
-        val hash = script.hashCode()
+        val hash = (script.hashCode() + namespaces.hashCode())
         return if (cache.containsKey(hash)) {
             cache[hash]!!
         } else {
@@ -75,7 +75,7 @@ class AsahiEngineImpl private constructor(
     }
 
     override fun compile(tokens: Collection<String>, vararg namespaces: String): AsahiCompiledScript {
-        val hash = tokens.hashCode()
+        val hash = tokens.hashCode() + namespaces.hashCode()
         return if (cache.containsKey(hash)) {
             cache[hash]!!
         } else {

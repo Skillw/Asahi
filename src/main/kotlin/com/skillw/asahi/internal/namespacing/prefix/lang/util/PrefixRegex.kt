@@ -4,7 +4,7 @@ import com.skillw.asahi.api.annotation.AsahiPrefix
 import com.skillw.asahi.api.prefixParser
 import com.skillw.asahi.api.quest
 import com.skillw.asahi.api.quester
-import com.skillw.asahi.api.script.NativeFunction
+import com.skillw.asahi.api.script.linking.NativeFunction
 
 internal object PrefixRegex {
     @AsahiPrefix(["regexOf"], "regex")

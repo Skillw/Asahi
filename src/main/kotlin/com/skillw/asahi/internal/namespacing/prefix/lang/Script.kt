@@ -4,7 +4,7 @@ import com.skillw.asahi.api.annotation.AsahiPrefix
 import com.skillw.asahi.api.prefixParser
 import com.skillw.asahi.api.quest
 import com.skillw.asahi.api.quester
-import com.skillw.asahi.api.script.NativeFunction
+import com.skillw.asahi.api.script.linking.NativeFunction
 import com.skillw.asahi.util.toArgs
 
 
@@ -17,7 +17,7 @@ private fun `fun`() = prefixParser {
     val params = result.groups[2]?.value!!.toArgs().filter { it.isNotEmpty() && it.isNotBlank() }.toTypedArray()
     val content = parseScript()
     result {
-        NativeFunction.create(name, params, content).also { context().addFunction(it) }
+        NativeFunction.create(name, params, content).also { context().addInvoker(name, it) }
     }
 }
 

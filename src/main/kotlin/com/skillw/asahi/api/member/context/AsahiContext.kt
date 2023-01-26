@@ -1,8 +1,10 @@
 package com.skillw.asahi.api.member.context
 
+import com.skillw.asahi.api.member.AsahiRegistrable
 import com.skillw.asahi.api.member.quest.Quester
-import com.skillw.asahi.api.script.NativeFunction
+import com.skillw.asahi.api.script.linking.InvokerHolder
 import com.skillw.asahi.internal.context.AsahiContextImpl
+import java.util.*
 import java.util.concurrent.CompletableFuture
 import javax.script.Bindings
 
@@ -13,9 +15,51 @@ import javax.script.Bindings
  *
  * @constructor Create empty Asahi context
  */
-interface AsahiContext : MutableMap<String, Any>, Bindings {
-    /** Native Functions 当前上下文中的Asahi函数 */
-    val functions: HashMap<String, NativeFunction>
+interface AsahiContext : MutableMap<String, Any>, Bindings, InvokerHolder {
+    abstract class Getter(override val key: String, val priority: Int) : AsahiRegistrable<String>, Comparable<Getter> {
+        protected abstract fun AsahiContext.filter(key: String): Boolean
+        protected abstract fun AsahiContext.getValue(key: String): Any?
+
+        fun filterKey(context: AsahiContext, key: String): Boolean {
+            return context.filter(key)
+        }
+
+        fun get(context: AsahiContext, key: String): Any? {
+            return context.getValue(key)
+        }
+
+        override fun register() {
+            registerGetter(this)
+        }
+
+        override fun compareTo(other: Getter): Int = if (this.priority == other.priority) 0
+        else if (this.priority > other.priority) 1
+        else -1
+    }
+
+    abstract class Setter(override val key: String, val priority: Int) : AsahiRegistrable<String>, Comparable<Setter> {
+        protected abstract fun AsahiContext.filter(key: String): Boolean
+        protected abstract fun AsahiContext.setValue(key: String, value: Any): Any?
+
+        fun filterKey(context: AsahiContext, key: String): Boolean {
+            return context.filter(key)
+        }
+
+        fun set(context: AsahiContext, key: String, value: Any): Any? {
+            return context.setValue(key, value)
+        }
+
+        override fun register() {
+            registerSetter(this)
+        }
+
+        override fun compareTo(other: Setter): Int = if (this.priority == other.priority) 0
+        else if (this.priority > other.priority) 1
+        else -1
+    }
+
+    fun getOrigin(key: String): Any?
+    fun setOrigin(key: String, value: Any): Any?
 
     /**
      * Put deep
@@ -40,21 +84,6 @@ interface AsahiContext : MutableMap<String, Any>, Bindings {
      * @param map
      */
     fun putAllIfExists(map: Map<String, Any>)
-
-    /**
-     * Has native function
-     *
-     * @param key
-     * @return
-     */
-    fun hasNativeFunction(key: String): Boolean
-
-    /**
-     * Add function
-     *
-     * @param function
-     */
-    fun addFunction(function: NativeFunction)
 
     /**
      * 调用NativeFunction
@@ -227,5 +256,30 @@ interface AsahiContext : MutableMap<String, Any>, Bindings {
         ): AsahiContext {
             return AsahiContextImpl.create(data)
         }
+
+        internal val getters = LinkedList<Getter>()
+        internal val setters = LinkedList<Setter>()
+
+        @JvmStatic
+        fun registerGetter(getter: Getter) {
+            getters += getter
+            getters.sorted()
+        }
+
+        @JvmStatic
+        fun registerSetter(setter: Setter) {
+            setters += setter
+            getters.sorted()
+        }
     }
+
+    /**
+     * 添加任务
+     *
+     * @param task 任务
+     */
+    fun addTask(task: CompletableFuture<*>)
+
+    /** 等待所有任务完成 */
+    fun awaitAllTask()
 }

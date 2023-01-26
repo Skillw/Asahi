@@ -1,13 +1,17 @@
 package com.skillw.asahi.internal.context
 
 import com.skillw.asahi.api.member.context.AsahiContext
+import com.skillw.asahi.api.member.context.AsahiContext.Companion.getters
+import com.skillw.asahi.api.member.context.AsahiContext.Companion.setters
+import com.skillw.asahi.api.member.quest.LazyQuester
 import com.skillw.asahi.api.script.AsahiEngineFactory
-import com.skillw.asahi.api.script.NativeFunction
+import com.skillw.asahi.api.script.linking.Invoker
 import com.skillw.asahi.util.getDeep
 import com.skillw.asahi.util.putDeep
 import com.skillw.asahi.util.safe
 import java.util.*
 import java.util.concurrent.CompletableFuture
+import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.LinkedBlockingDeque
 
 
@@ -27,7 +31,8 @@ internal class AsahiContextImpl private constructor(
 
     private val onExit: Deque<() -> Unit> = LinkedBlockingDeque()
 
-    override val functions = HashMap<String, NativeFunction>()
+    override val invokers = HashMap<String, Invoker>()
+    private val tasks = CopyOnWriteArrayList<CompletableFuture<*>>()
 
     override val entries: MutableSet<MutableMap.MutableEntry<String, Any>>
         get() = data.entries
@@ -39,11 +44,21 @@ internal class AsahiContextImpl private constructor(
         get() = data.size
 
     override fun get(key: String): Any? {
-        return if (key.contains(".")) getDeep(key) else data[key]
+        return (getters.firstOrNull { it.filterKey(this, key) } ?: return getOrigin(key)).get(this, key)
     }
 
     override fun put(key: String, value: Any): Any? {
-        return if (key.contains(".")) putDeep(key, value) else data[key] = value
+        return (setters.firstOrNull { it.filterKey(this, key) } ?: return setOrigin(key, value)).set(this, key, value)
+    }
+
+    override fun getOrigin(key: String): Any? {
+        return (if (key.contains(".")) getDeep(key) else data[key]).run {
+            if (this is LazyQuester<*>) get() else this
+        }
+    }
+
+    override fun setOrigin(key: String, value: Any): Any? {
+        return if (key.contains(".")) data.putDeep(key, value) else data[key] = value
     }
 
     override fun putDeep(key: String, value: Any): Any? {
@@ -54,9 +69,10 @@ internal class AsahiContextImpl private constructor(
         return data.getDeep(key)
     }
 
+
     override fun putAll(from: Map<out String, Any>) {
         if (from is AsahiContext) {
-            functions.putAll(from.functions)
+            invokers.putAll(from.invokers)
         }
         data.putAll(from)
     }
@@ -67,16 +83,8 @@ internal class AsahiContextImpl private constructor(
         }
     }
 
-    override fun hasNativeFunction(key: String): Boolean {
-        return functions.containsKey(key)
-    }
-
-    override fun addFunction(function: NativeFunction) {
-        functions[function.key] = function
-    }
-
     override fun invoke(key: String, vararg params: Any?): Any? {
-        val func = functions[key] ?: error("No such function called $key")
+        val func = invokers[key] ?: error("No such function called $key")
         return func.invoke(this, *params)
     }
 
@@ -162,7 +170,15 @@ internal class AsahiContextImpl private constructor(
     }
 
     override fun toString(): String {
-        return "Variables: $data \n Functions: $functions"
+        return "Variables: $data \n Functions: $invokers"
+    }
+
+    override fun addTask(task: CompletableFuture<*>) {
+        tasks.add(task)
+    }
+
+    override fun awaitAllTask() {
+        CompletableFuture.allOf(*tasks.toTypedArray()).join()
     }
 
     companion object {

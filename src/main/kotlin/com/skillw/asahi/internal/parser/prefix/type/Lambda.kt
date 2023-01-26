@@ -2,7 +2,7 @@ package com.skillw.asahi.internal.parser.prefix.type
 
 import com.skillw.asahi.api.annotation.AsahiTypeParser
 import com.skillw.asahi.api.quester
-import com.skillw.asahi.api.script.NativeFunction
+import com.skillw.asahi.api.script.linking.NativeFunction
 import com.skillw.asahi.api.typeParser
 import com.skillw.asahi.util.toArgs
 

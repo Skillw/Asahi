@@ -3,7 +3,7 @@ package com.skillw.asahi.internal.script
 import com.skillw.asahi.api.AsahiAPI.compile
 import com.skillw.asahi.api.member.context.AsahiContext
 import com.skillw.asahi.api.script.AsahiCompiledScript
-import com.skillw.asahi.api.script.NativeFunction
+import com.skillw.asahi.api.script.linking.NativeFunction
 import com.skillw.asahi.util.toLazyMap
 import com.skillw.asahi.util.AsahiDataMap
 

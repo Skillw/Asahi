@@ -71,7 +71,7 @@ internal object PrefixDebug {
                 when (peek()) {
                     "native" -> result {
                         debug("Asahi Native Functions: ")
-                        functions.values.debug()
+                        invokers.values.debug()
                     }
 
                     else -> result {

@@ -5,7 +5,7 @@ import com.skillw.asahi.api.member.quest.Quester
 import com.skillw.asahi.api.script.AsahiCompiledScript
 import com.skillw.asahi.api.script.AsahiEngine
 import com.skillw.asahi.api.script.AsahiScriptException
-import com.skillw.asahi.util.MessageUtil.debug
+import com.skillw.asahi.util.debug
 import java.util.*
 import javax.script.ScriptContext
 import javax.script.ScriptContext.ENGINE_SCOPE

@@ -14,6 +14,7 @@ internal class AsahiDemandImpl private constructor() : AsahiDemand() {
     override val args = ArrayList<String>()
     override val tags = LinkedHashSet<String>()
 
+
     private constructor(string: String) : this() {
         fun String.addTag() {
             tags.add(StringParser.content(substring(2)))

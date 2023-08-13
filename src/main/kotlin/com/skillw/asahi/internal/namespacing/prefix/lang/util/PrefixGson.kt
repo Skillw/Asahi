@@ -3,7 +3,7 @@ package com.skillw.asahi.internal.namespacing.prefix.lang.util
 import com.google.gson.Gson
 import com.skillw.asahi.api.annotation.AsahiPrefix
 import com.skillw.asahi.api.prefixParser
-import com.skillw.asahi.util.encodeJson
+import com.skillw.asahi.util.GsonUtils.encodeJson
 import com.skillw.asahi.util.findClass
 
 internal object PrefixGson {

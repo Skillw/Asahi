@@ -6,6 +6,7 @@ import com.skillw.asahi.api.prefixParser
 import com.skillw.asahi.api.quest
 import com.skillw.asahi.api.quester
 import com.skillw.asahi.util.calculate.CalcOperator.Companion.toCalcOperator
+import com.skillw.asahi.util.calculate.calculate
 
 /**
  * @className Calculate
@@ -18,7 +19,7 @@ private fun calculate() = prefixParser {
     val formulaGetter = quest<String>()
     result {
         val formula = formulaGetter.get().analysis(this, *namespaceNames())
-        com.skillw.asahi.util.calculate(formula)
+        formula.calculate()
     }
 }
 

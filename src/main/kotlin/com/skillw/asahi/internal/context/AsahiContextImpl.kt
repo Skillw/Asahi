@@ -4,7 +4,6 @@ import com.skillw.asahi.api.member.context.AsahiContext
 import com.skillw.asahi.api.member.context.AsahiContext.Companion.getters
 import com.skillw.asahi.api.member.context.AsahiContext.Companion.setters
 import com.skillw.asahi.api.member.quest.LazyQuester
-import com.skillw.asahi.api.script.AsahiEngineFactory
 import com.skillw.asahi.api.script.linking.Invoker
 import com.skillw.asahi.util.getDeep
 import com.skillw.asahi.util.putDeep
@@ -51,6 +50,10 @@ internal class AsahiContextImpl private constructor(
         return (setters.firstOrNull { it.filterKey(this, key) } ?: return setOrigin(key, value)).set(this, key, value)
     }
 
+    override fun remove(key: String): Any? {
+        return (setters.firstOrNull { it.filterKey(this, key) } ?: return remove(key)).set(this, key, null)
+    }
+
     override fun getOrigin(key: String): Any? {
         return (if (key.contains(".")) getDeep(key) else data[key]).run {
             if (this is LazyQuester<*>) get() else this
@@ -89,11 +92,11 @@ internal class AsahiContextImpl private constructor(
     }
 
     override fun import(vararg paths: String) {
-        paths.forEach {
-            AsahiEngineFactory.search(it)?.let { script ->
-                putAll(script.engine.context())
-            }
-        }
+//        paths.forEach {
+//            Pouvoir.scriptManager.search(it)?.let { script ->
+//                putAll((script.script.engine as AsahiEngine).context())
+//            }
+//        }
     }
 
     override fun <R : Any> select(obj: R): R {

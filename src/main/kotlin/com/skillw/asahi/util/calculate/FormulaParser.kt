@@ -3,7 +3,6 @@ package com.skillw.asahi.util.calculate
 import com.skillw.asahi.util.calculate.CalcOperator.Companion.isCalcOperator
 import com.skillw.asahi.util.calculate.CalcOperator.Companion.toCalcOperator
 import taboolib.common.platform.function.warning
-import java.math.BigDecimal
 import java.util.*
 
 private fun String.toCalcInfix(): ArrayList<Any> {
@@ -80,18 +79,18 @@ private fun Queue<Any>.calc(): Double {
             continue
         }
         val calcOperator = obj as CalcOperator
-        val a = calcStack.pop()
-        val b = calcStack.pop()
+        val a = if (calcStack.isEmpty()) 0.0 else calcStack.pop()
+        val b = if (calcStack.isEmpty()) 0.0 else calcStack.pop()
         calcStack.push(calcOperator.calc(a, b))
     }
     return calcStack.pop()
 }
 
-internal fun String.calculate(): BigDecimal {
+internal fun String.calculate(): Double {
     return runCatching {
-        BigDecimal.valueOf(toCalcInfix().toCalcSuffix().calc())
+        filter { it != ' ' }.toCalcInfix().toCalcSuffix().calc()
     }.getOrElse {
         warning("Wrong calculation formula! $this");
-        BigDecimal(0)
+        0.0
     }
 }

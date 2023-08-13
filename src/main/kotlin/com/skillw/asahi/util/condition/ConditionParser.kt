@@ -1,5 +1,6 @@
 package com.skillw.asahi.util.condition
 
+import com.skillw.asahi.util.condition.ConditionOperator
 import com.skillw.asahi.util.condition.ConditionOperator.Companion.isConditionOperator
 import com.skillw.asahi.util.condition.ConditionOperator.Companion.toConditionOperator
 import java.util.*

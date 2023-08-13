@@ -3,6 +3,7 @@ package com.skillw.asahi.internal
 import com.skillw.asahi.api.annotation.*
 import com.skillw.asahi.api.member.AsahiRegistrable
 import com.skillw.asahi.api.member.context.AsahiContext
+import com.skillw.asahi.api.member.namespace.Namespace
 import com.skillw.asahi.api.member.parser.infix.namespacing.BaseInfix
 import com.skillw.asahi.api.member.parser.prefix.TopPrefixParser
 import com.skillw.asahi.api.member.parser.prefix.namespacing.BaseJavaPrefix
@@ -20,6 +21,7 @@ object AsahiLoader {
     fun inject(clazz: ClassStructure) {
         safe {
             with(clazz) {
+                register<AsahiNamespace, Namespace>()
                 register<AsahiTopParser, TopPrefixParser<*>>()
                 register<AsahiTypeParser, TypeParser<*>>()
                 register<AsahiInfix, BaseInfix<*>>()
@@ -53,6 +55,8 @@ object AsahiLoader {
             methods.forEach inner@{ method ->
                 safe {
                     if (!method.isAnnotationPresent(AsahiPrefix::class.java) || method.returnType.simpleName != "PrefixCreator") return@safe
+                    println(method.name)
+                    println(obj)
                     val creator =
                         (if (method.isStatic) method.invokeStatic() else method.invoke(obj!!)) as PrefixCreator<*>
                     creator.register(method.getAnnotation(AsahiPrefix::class.java), method.name)

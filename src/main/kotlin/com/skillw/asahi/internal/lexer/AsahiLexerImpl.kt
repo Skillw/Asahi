@@ -2,16 +2,14 @@ package com.skillw.asahi.internal.lexer
 
 import com.skillw.asahi.api.AsahiAPI.compile
 import com.skillw.asahi.api.AsahiManager
-import com.skillw.asahi.api.AsahiManager.loadSharedNamespace
 import com.skillw.asahi.api.member.lexer.AsahiLexer
 import com.skillw.asahi.api.member.lexer.tokenizer.ScriptTokenizer
-import com.skillw.asahi.api.member.namespace.Namespace
+import com.skillw.asahi.api.member.namespace.NamespaceContainer
 import com.skillw.asahi.api.member.quest.Quester
 import com.skillw.asahi.api.questSafely
 import com.skillw.asahi.api.quester
 import com.skillw.asahi.api.script.AsahiCompiledScript
 import com.skillw.asahi.api.script.AsahiQuestException
-import com.skillw.asahi.util.MessageUtil
 import com.skillw.asahi.util.condition.ConditionOperator.Companion.isConditionOperator
 import com.skillw.asahi.util.condition.ConditionOperator.Companion.toConditionOperator
 import com.skillw.asahi.util.condition.calcCondition
@@ -25,7 +23,7 @@ import java.util.*
  */
 internal class AsahiLexerImpl : AsahiLexer {
     private var index = -1
-    override val namespaces = HashSet<Namespace>()
+    override val namespaces = NamespaceContainer()
 
     //组合优先于继承
     private val tokenizer: ScriptTokenizer
@@ -54,10 +52,6 @@ internal class AsahiLexerImpl : AsahiLexer {
         fun of(tokens: Collection<String>): AsahiLexerImpl {
             return AsahiLexerImpl(tokens)
         }
-    }
-
-    init {
-        loadSharedNamespace(this)
     }
 
     /**
@@ -225,7 +219,7 @@ internal class AsahiLexerImpl : AsahiLexer {
 
     private fun debug() {
         if (debug) {
-            MessageUtil.debug(info("Compile Debug-${currentIndex()}"))
+            info("Compile Debug-${currentIndex()}")
         }
     }
 

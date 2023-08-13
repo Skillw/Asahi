@@ -2,7 +2,7 @@ plugins {
     `java-library`
     `maven-publish`
     signing
-    id("io.izzel.taboolib") version "1.55"
+    id("io.izzel.taboolib") version "1.56"
     id("org.jetbrains.kotlin.jvm") version "1.7.20"
     id("org.jetbrains.dokka") version "1.7.20"
 }
@@ -13,6 +13,7 @@ tasks.javadoc {
     }
 }
 
+
 val order: String? by project
 val api: String? by project
 
@@ -20,10 +21,30 @@ task("versionModify") {
     project.version = project.version.toString() + (order?.let { "-$it" } ?: "")
 }
 
-taboolib {
-    if (api != null) {
-        options("skip-kotlin-relocate", "keep-kotlin-module")
+tasks.withType<Jar> {
+    // Otherwise you'll get a "No main manifest attribute" error
+    manifest {
+        attributes["Main-Class"] = "com.skillw.asahi.Playground"
     }
+
+    // To avoid the duplicate handling strategy error
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    // To add all of the dependencies
+    from(sourceSets.main.get().output)
+
+    dependsOn(configurations.runtimeClasspath)
+    from({
+        configurations.runtimeClasspath.get().filter { it.name.endsWith("jar") }.map { zipTree(it) }
+    })
+}
+//jar {
+//    manifest {
+//        attributes 'Main-Class': 'MovieQuizBackendKt'
+//    }
+//}
+taboolib {
+    options("skip-kotlin-relocate", "keep-kotlin-module")
     description {
         contributors {
             name("Glom_")
@@ -33,9 +54,10 @@ taboolib {
     install("common")
     install("common-5")
     install("module-chat")
+    install("module-kether")
     install("platform-application")
     classifier = null
-    version = "6.0.10-71"
+    version = "6.0.11-31"
     relocate("com.esotericsoftware.reflectasm", "com.skillw.asahi.reflectasm")
     relocate("com.google.gson", "com.skillw.asahi.gson")
 }
@@ -47,11 +69,12 @@ repositories {
 dependencies {
     compileOnly("com.esotericsoftware:reflectasm:1.11.9")
     compileOnly("com.google.code.gson:gson:2.9.0")
-    compileOnly(kotlin("stdlib-jdk8"))
+    implementation(kotlin("stdlib-jdk8"))
     compileOnly(fileTree("libs"))
 }
 
 tasks.withType<JavaCompile> {
+
     options.encoding = "UTF-8"
 }
 

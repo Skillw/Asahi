@@ -21,7 +21,7 @@ private fun Any?.mapValue(vararg namespaces: String): Any {
 }
 
 fun Map<*, *>.toLazyMap(vararg namespaces: String): Map<String, Any> {
-    return mapKeys { it.toString() }.mapValues { (_, value) ->
+    return mapKeys { it.key.toString() }.mapValues { (_, value) ->
         value.mapValue(*namespaces)
     }
 }

@@ -2,9 +2,7 @@ plugins {
     `java-library`
     `maven-publish`
     signing
-    id("io.izzel.taboolib") version "1.56"
-    id("org.jetbrains.kotlin.jvm") version "1.7.20"
-    id("org.jetbrains.dokka") version "1.7.20"
+    id("org.jetbrains.kotlin.jvm") version "1.9.0"
 }
 
 tasks.javadoc {
@@ -24,7 +22,7 @@ task("versionModify") {
 tasks.withType<Jar> {
     // Otherwise you'll get a "No main manifest attribute" error
     manifest {
-        attributes["Main-Class"] = "com.skillw.asahi.Playground"
+        attributes["Main-Class"] = "com.skillw.asahi.PlayGroundKt"
     }
 
     // To avoid the duplicate handling strategy error
@@ -38,37 +36,14 @@ tasks.withType<Jar> {
         configurations.runtimeClasspath.get().filter { it.name.endsWith("jar") }.map { zipTree(it) }
     })
 }
-//jar {
-//    manifest {
-//        attributes 'Main-Class': 'MovieQuizBackendKt'
-//    }
-//}
-taboolib {
-    options("skip-kotlin-relocate", "keep-kotlin-module")
-    description {
-        contributors {
-            name("Glom_")
-        }
-    }
-    options("skip-kotlin-relocate")
-    install("common")
-    install("common-5")
-    install("module-chat")
-    install("module-kether")
-    install("platform-application")
-    classifier = null
-    version = "6.0.11-31"
-    relocate("com.esotericsoftware.reflectasm", "com.skillw.asahi.reflectasm")
-    relocate("com.google.gson", "com.skillw.asahi.gson")
-}
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    compileOnly("com.esotericsoftware:reflectasm:1.11.9")
-    compileOnly("com.google.code.gson:gson:2.9.0")
+    implementation("com.google.code.gson:gson:2.9.0")
+    implementation("com.esotericsoftware:reflectasm:1.11.9")
     implementation(kotlin("stdlib-jdk8"))
     compileOnly(fileTree("libs"))
 }

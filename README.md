@@ -130,8 +130,6 @@ AsahiLoader.init("你的包名")
 
 ## Links
 
-WIKI [http://blog.skillw.com/#sort=asahi&doc=README.md](http://blog.skillw.com/#sort=asahi&doc=README.md)
-
-JavaDoc [http://doc.skillw.com/asahi/](http://doc.skillw.com/asahi/)
+WIKI [https://www.skillw.com/docs/pouvoir/other/asahi](https://www.skillw.com/docs/pouvoir/other/asahi)
 
 爱发电 [https://afdian.net/@glom\_](https://afdian.net/@glom_)

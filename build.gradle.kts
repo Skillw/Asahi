@@ -1,8 +1,12 @@
+import io.izzel.taboolib.gradle.*
+
 plugins {
     `java-library`
     `maven-publish`
     signing
-    id("org.jetbrains.kotlin.jvm") version "1.9.0"
+    id("io.izzel.taboolib") version "2.0.11"
+    id("org.jetbrains.kotlin.jvm") version "1.9.22"
+    id("org.jetbrains.dokka") version "1.9.20"
 }
 
 tasks.javadoc {
@@ -19,10 +23,41 @@ task("versionModify") {
     project.version = project.version.toString() + (order?.let { "-$it" } ?: "")
 }
 
+taboolib {
+
+    description {
+        contributors {
+            name("Glom_")
+        }
+        dependencies {}
+    }
+
+    env {
+        // basic
+        install(UNIVERSAL)
+
+        install(KETHER)
+    }
+
+
+    version {
+        if(project.gradle.startParameter.taskNames.getOrNull(0) == "taboolibBuildApi" || api != null){
+            println("api!")
+            isSkipKotlinRelocate =true
+            isSkipKotlin = true
+        }
+        taboolib = "6.1.1-beta17"
+    }
+
+    relocate("org.openjdk.nashorn", "com.skillw.nashorn")
+    relocate("jdk.nashorn", "com.skillw.nashorn.legacy")
+    relocate("com.esotericsoftware.reflectasm", "com.skillw.asahi.reflectasm")
+}
+
 tasks.withType<Jar> {
     // Otherwise you'll get a "No main manifest attribute" error
     manifest {
-        attributes["Main-Class"] = "com.skillw.asahi.PlayGroundKt"
+        attributes["Main-Class"] = "com.skillw.asahi.Playground"
     }
 
     // To avoid the duplicate handling strategy error
@@ -42,8 +77,8 @@ repositories {
 }
 
 dependencies {
-    implementation("com.google.code.gson:gson:2.9.0")
-    implementation("com.esotericsoftware:reflectasm:1.11.9")
+    compileOnly("com.esotericsoftware:reflectasm:1.11.9")
+    compileOnly("com.google.code.gson:gson:2.9.0")
     implementation(kotlin("stdlib-jdk8"))
     compileOnly(fileTree("libs"))
 }

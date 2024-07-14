@@ -1,12 +1,11 @@
 package com.skillw.asahi.api.annotation
 
 /**
- * Asahi Prefix annotation
+ * Asahi Type Parser annotation
  *
  * 自动注册
  *
- * @constructor Asahi Prefix annotation
+ * @constructor Asahi Type parser annotation
  */
 @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION, AnnotationTarget.FIELD)
-@Repeatable
-annotation class AsahiMember
+annotation class AsahiTypeParser
